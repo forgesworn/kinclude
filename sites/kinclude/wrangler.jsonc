@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  // Static one-page site, served from Workers static assets.
+  "name": "kinclude-site",
+  "compatibility_date": "2026-10-02",
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    { "pattern": "kinclude.app", "custom_domain": true },
+    { "pattern": "www.kinclude.app", "custom_domain": true }
+  ],
+  "workers_dev": false
+}

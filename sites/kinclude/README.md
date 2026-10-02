@@ -1,7 +1,7 @@
 # Kinclude — one-page marketing site
 
 Static page in the style of the Kindred site. No build step. The site is
-`public/`. Not deployed yet; it is meant for kinclude.app. The copy describes
+`public/`, live at https://kinclude.app. The copy describes
 the intended design; the product is not built.
 
 ## Preview
@@ -11,8 +11,18 @@ the intended design; the product is not built.
 then open http://localhost:8000. Check it at 375px wide (no horizontal scroll)
 and at desktop width.
 
+## Deploy
+
+Served by Cloudflare as a Worker with static assets (`kinclude-site`,
+config in `wrangler.jsonc`), on the custom domains `kinclude.app` and
+`www.kinclude.app`. Cloudflare manages the DNS records and TLS. To publish
+changes:
+
+    cd sites/kinclude && npx wrangler deploy
+
 ## Files
 
 - `public/index.html` — the page
 - `public/styles.css` — the stylesheet
 - `public/favicon.svg` — the favicon
+- `wrangler.jsonc` — the Cloudflare Worker config
