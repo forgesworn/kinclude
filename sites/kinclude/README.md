@@ -15,8 +15,12 @@ and at desktop width.
 
 Served by Cloudflare as a Worker with static assets (`kinclude-site`,
 config in `wrangler.jsonc`), on the custom domains `kinclude.app` and
-`www.kinclude.app`. Cloudflare manages the DNS records and TLS. To publish
-changes:
+`www.kinclude.app`. Cloudflare manages the DNS records and TLS.
+
+A push to `main` that touches `sites/kinclude/` deploys it automatically
+(`.github/workflows/deploy-site.yml`), then checks that kinclude.app is serving
+the new files. The workflow can also be run by hand from the Actions tab. To
+deploy from a local checkout instead:
 
     cd sites/kinclude && npx wrangler deploy
 
