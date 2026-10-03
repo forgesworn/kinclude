@@ -25,4 +25,5 @@ changes:
 - `public/index.html` — the page
 - `public/styles.css` — the stylesheet
 - `public/favicon.svg` — the favicon
+- `public/robots.txt`, `public/sitemap.xml` — crawler files
 - `wrangler.jsonc` — the Cloudflare Worker config
