@@ -1,0 +1,401 @@
+{
+  "description": "Kinclude wire vectors. Events are signed once and committed; derived values are exact.",
+  "keys": {
+    "guardian": "1111111111111111111111111111111111111111111111111111111111111111",
+    "child": "2222222222222222222222222222222222222222222222222222222222222222",
+    "nan": "3333333333333333333333333333333333333333333333333333333333333333",
+    "authority": "4444444444444444444444444444444444444444444444444444444444444444",
+    "phoneSecret": "5555555555555555555555555555555555555555555555555555555555555555",
+    "roomSecret": "6666666666666666666666666666666666666666666666666666666666666666",
+    "epoch1Secret": "7777777777777777777777777777777777777777777777777777777777777777",
+    "pairingSecret": "88888888888888888888888888888888"
+  },
+  "pubkeys": {
+    "guardian": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+    "child": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+    "nan": "3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1",
+    "authority": "2c0b7cf95324a07d05398b240174dc0c2be444d96b159aa6c7f7b1e668680991"
+  },
+  "room": {
+    "id": "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb",
+    "lobby": "0f2e42e7bb07be991bb759c87c49338e92a0478b76d0916b72f08a82c924dda0",
+    "epoch1": "c11eab15a58f795eeceb1bb3a6a5f8b6a2d7a8afc07b77e3dfbbae86a24926d1"
+  },
+  "derived": {
+    "roomDevicePubkey": "069ce87139c4f03669cb0ed650adfb987bbedecdf205564edf7764962df50177",
+    "inboxPubkey": "1e56e388556d892b61c71544ad2c83113dafa1ceab43de68864f05be0655331d",
+    "pairingKey": "25705daa9a2ebd69d72033abe715c2733f0e7bfdb9401a4c8f0a54ba8270dbbf",
+    "pairingTag": "c3c33a447871e9718813ea5025587e1617d9507ef691a138ef83400f09111e9a",
+    "pairingCode": "kinclude-pair:eyJnIjoiNGYzNTViZGNiN2NjMGFmNzI4ZWYzY2NlYjk2MTVkOTA2ODRiYjViMmNhNWY4NTlhYjBmMGI3MDQwNzU4NzFhYSIsInMiOiI4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4OCIsInQiOjIsIm4iOiJTYW0iLCJtIjoiTXVtIn0"
+  },
+  "links": {
+    "guardianOf": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kindependence/dependant/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ]
+      ],
+      "content": "I am a guardian of this person.",
+      "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+      "id": "60b02571743c8943f18746c815c744a9d19df52f4110257e608fd9231e421299",
+      "sig": "cea6fb1d2391772d3d17b4aa56a84215de3b762d64316719b12d2e871e9a39b8a0f4d2151438086a4e33459f1663d8f48682b79d532cee88cfb66c5ce11b92dd"
+    },
+    "dependantOf": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kindependence/guardian/4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa"
+        ],
+        [
+          "p",
+          "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa"
+        ]
+      ],
+      "content": "This person is my guardian.",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "48ef19fc877c6c9d909ee8216b26befe424b2215810e8c2247c98e7309918c71",
+      "sig": "b37687b90e5fd8c249c59fcdb276119fc271a241fff2513114cea00ed4245e7fb10f38c8fdbcb64e98de8ed0d752cab5d80c6d6d20554777eb03c93b2410981c"
+    },
+    "unlink": {
+      "kind": 30078,
+      "created_at": 1800000010,
+      "tags": [
+        [
+          "d",
+          "kindependence/unlink/4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa"
+        ],
+        [
+          "p",
+          "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa"
+        ]
+      ],
+      "content": "This person is no longer linked to me as guardian or dependant.",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "36622d7e62d12164acf6c48640e227bd5833a1022a984c0cf009f56b58670d70",
+      "sig": "4edad1ba9801a66d1b93b419253d0cc4948f5f1e85609c516187f9ff041503b47df8daf5f46e6f01b51b09ef0ff9af7cc58d09dba7c3565d7d8785de927c791e"
+    }
+  },
+  "approval": {
+    "terms": {
+      "room": "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb",
+      "invitee": "3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1",
+      "child": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "role": "adult",
+      "guardians": [],
+      "expires": 1800604800
+    },
+    "byChild": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/approval/ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb/3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1"
+        ],
+        [
+          "room",
+          "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb"
+        ],
+        [
+          "child",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "role",
+          "adult"
+        ],
+        [
+          "expires",
+          "1800604800"
+        ]
+      ],
+      "content": "I agree to Nan joining this Kinclude room.",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "5d13f24ef94796c21a1ff7793b61c221eda20b18e164d908034d2f48a7af2ecd",
+      "sig": "2a56dfcc83f04fad3ef51647e04fd4bc2e1a2291fb6c28ca4ce88e32a2a455f0bb8da508a4a662df7bdb48734122853aa3ccf28c7ee277608fc2315a0821542a"
+    },
+    "byGuardian": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/approval/ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb/3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "3c72addb4fdf09af94f0c94d7fe92a386a7e70cf8a1d85916386bb2535c7b1b1"
+        ],
+        [
+          "room",
+          "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb"
+        ],
+        [
+          "child",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "role",
+          "adult"
+        ],
+        [
+          "expires",
+          "1800604800"
+        ]
+      ],
+      "content": "I agree to Nan joining this Kinclude room.",
+      "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+      "id": "e89e31c638ef024790ee026e93cf68dcc0dc99dbd589ec1283f85449e25897ba",
+      "sig": "90e9b5f92efb5f4aa4c3555455eef17b03fc79860788255c413a07d177ae77c1e01af47927d3a7566e5072dc819f308e2ba1d059bfab8704dba0dcd82a65be22"
+    }
+  },
+  "tier": {
+    "genesis": {
+      "statement": {
+        "child": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+        "tier": 2,
+        "seq": 0,
+        "prev": "genesis"
+      },
+      "digest": "b172c85fa93363085ade15f57903b04ccf77979d8bc29aaa9925fc6444ddc10f"
+    },
+    "genesisByChild": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/tier/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "tier",
+          "2"
+        ],
+        [
+          "seq",
+          "0"
+        ],
+        [
+          "prev",
+          "genesis"
+        ]
+      ],
+      "content": "Sam's oversight is now: Growing up. We agreed this together.",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "e53dd9fa1d4654a01b138165b8cda1ff3e78952d5fa72ae1bc8a3ad797f6928c",
+      "sig": "171d519145adeae96d7bfb47edf8c3409d12c6f764bd47083968e1cce78c8491e2abb92e303cf3bc66a3410bd4cca8c13c80aad1cf1cb3eca57a22debc32ab37"
+    },
+    "genesisByGuardian": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/tier/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "tier",
+          "2"
+        ],
+        [
+          "seq",
+          "0"
+        ],
+        [
+          "prev",
+          "genesis"
+        ]
+      ],
+      "content": "Sam's oversight is now: Growing up. We agreed this together.",
+      "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+      "id": "26cbc855d17ebf27a535089a8a89b05c9ae5f90c745cd7422f88b454214ae0f6",
+      "sig": "a7d3a8cacb365a426458a554c1753120eff546375e1f731547884c77d79839e05e6213e6c8b3981ced3a5e1a964d07b108edc7ee96d64a70b363e3363f5e3536"
+    },
+    "up": {
+      "statement": {
+        "child": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+        "tier": 3,
+        "seq": 1,
+        "prev": "b172c85fa93363085ade15f57903b04ccf77979d8bc29aaa9925fc6444ddc10f"
+      },
+      "digest": "8d88fe47f8693a094de44af7c5f0d7c5f0c99a6b706d5ba5fe9c80f37dcf13f9"
+    },
+    "upByChild": {
+      "kind": 30078,
+      "created_at": 1800000060,
+      "tags": [
+        [
+          "d",
+          "kinclude/tier/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "tier",
+          "3"
+        ],
+        [
+          "seq",
+          "1"
+        ],
+        [
+          "prev",
+          "b172c85fa93363085ade15f57903b04ccf77979d8bc29aaa9925fc6444ddc10f"
+        ]
+      ],
+      "content": "Sam's oversight is now: Nearly grown. We agreed this together.",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "24d397c6fba79a13d2f7defd0aa1ed98ec3d629d9d432c5b67f58cb9703f323c",
+      "sig": "2ca30e173427adb637fcb2607a257af7be64e06bc443ce8132917fd10ea1187b207b369552c067b3efd32055f96f91f4838179a32554c2dc38fa5655fd3f7a57"
+    },
+    "upByGuardian": {
+      "kind": 30078,
+      "created_at": 1800000060,
+      "tags": [
+        [
+          "d",
+          "kinclude/tier/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "tier",
+          "3"
+        ],
+        [
+          "seq",
+          "1"
+        ],
+        [
+          "prev",
+          "b172c85fa93363085ade15f57903b04ccf77979d8bc29aaa9925fc6444ddc10f"
+        ]
+      ],
+      "content": "Sam's oversight is now: Nearly grown. We agreed this together.",
+      "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+      "id": "0a0a47e36a3fde5d704e3c3bee3f567f3b01d2faad03f5aa8daa95af8d143770",
+      "sig": "72e321fab84d93049858bb8a5ccb3711aad8a78267a4296502a43d500380c310c851cd1f04bce3a02c8b60ce28b359d3f578f8ad96b6f2d65e60040422a5388b"
+    }
+  },
+  "emergency": {
+    "notice": {
+      "room": "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb",
+      "child": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "epoch": 1,
+      "reason": "Your phone has been off since 9"
+    },
+    "event": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/emergency/ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb/466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27/1"
+        ],
+        [
+          "p",
+          "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27"
+        ],
+        [
+          "room",
+          "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb"
+        ],
+        [
+          "epoch",
+          "1"
+        ]
+      ],
+      "content": "Your phone has been off since 9",
+      "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
+      "id": "254c0452fab86ef4e23c6bc7925b7dcaca66840af9f156cb88d056b8dcc36d8f",
+      "sig": "5a4a7ae7642bb971a7c656016ba67f117e1c9c9e8910727552ff7dd8513ce85ba1ee669c52a7a3d7d14ebddf61d2c80d98c902a925360330afceb93a57d059c3"
+    }
+  },
+  "state": {
+    "event": {
+      "kind": 30078,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "kinclude/state/ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb"
+        ],
+        [
+          "seq",
+          "0"
+        ]
+      ],
+      "content": "{\"v\":1,\"room\":\"ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb\",\"seq\":0,\"prev\":null,\"name\":\"Home\",\"epoch\":1,\"members\":[{\"pk\":\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\",\"role\":\"adult\",\"by\":\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\",\"at\":1800000000,\"approvals\":[],\"links\":[],\"name\":\"Mum\"}],\"readers\":[\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\"],\"removed\":[]}",
+      "pubkey": "2c0b7cf95324a07d05398b240174dc0c2be444d96b159aa6c7f7b1e668680991",
+      "id": "9f343e4e5b7bfcf8070d02fa7c6ad5b5eb35e02728d1e16fe69938e4815885c0",
+      "sig": "5dea8659e49535bc3e1a20eec49f8e06d6d9527357af8bab166d113d2e9f93a3459173f243555214c8c05b31a3bfba617569e81e516d12f024e4034461f6e266"
+    }
+  },
+  "message": {
+    "stream": {
+      "id": "c11eab15a58f795eeceb1bb3a6a5f8b6a2d7a8afc07b77e3dfbbae86a24926d1",
+      "key": "514261dc4452fbf320a2a6e151678a02168cb90c0163ff7c4c5206f99d7a99eb"
+    },
+    "credential": {
+      "kind": 20460,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb"
+        ],
+        [
+          "device",
+          "069ce87139c4f03669cb0ed650adfb987bbedecdf205564edf7764962df50177"
+        ],
+        [
+          "expiration",
+          "1831536000"
+        ]
+      ],
+      "content": "",
+      "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
+      "id": "503a008fe624a44c3b63c2838ff26786e6356ecc1d03207b0b88c45b1fdc3e8d",
+      "sig": "405542673c2be42f08241f96d45c9303e22e3d6e980d46f1cdd1f0f484f2ea430ce4916ec0dd136d526fb195e72553a8884333c620fd604f35b596cd1d204e74"
+    },
+    "event": {
+      "kind": 1460,
+      "created_at": 1800000000,
+      "tags": [
+        [
+          "d",
+          "c11eab15a58f795eeceb1bb3a6a5f8b6a2d7a8afc07b77e3dfbbae86a24926d1"
+        ]
+      ],
+      "content": "AjIkbF6REiUb3CTIs1RcKlT9hQpdjDdEtFsHDJlmaQst5+IrnRKdmNvNEafvpZzss8oIPIV0S3hqU/jw2D7jsu/91ejx57HQNcvE8iDUSb8Hq5C1he1ZbKq8JRWnLkrsGO3quciIJXySeGuA88bJhGv6Y5u5pbOBDFoHqTI7Hn04IZioBTk8UBuZAJTvMNwaoA1qhcVw/FjGpyCDHZ+JIDHQM2ByIsGoRy544WCj/gzAtkUdVPiU4X5yvV+kEJ3dAt17es486WAyK2pIXTVxWSeJev33rzGPsrxChqZkK5KGej8aJ3R2BVAU1aV/6GnRfdOby3Mwi+ke6Yljtc07dCs/Mk0OqniiCosPg3bKT3TE8K0YonUCujmEkPHgbI2sP8T7bamSK+wyiluSKz1AkhIbaylUuZqFHxHymz2Z+QYoHSre2adF+2PHfIivxtiBcAZ+V3RAEyve7ptEbmq/SbOoK7ajy7PrdpzEs/fo5+PnIaCMVoOkX830Qw738RCouFIhrcySkAAUG9KZVYZ+4vVACVBmrn7qfpcsxcION2KNbCQ9XSKxnGfj073gbcvvU8E87/MHRYxft+gbPUlq2w2tlMl5+5A+vr2Kkx3uJx4gHPqeRGIWUBA5o5gzdrShIilBKYQ3OBShHpcYr5cPbkSP0Do9GfQZdZYTxBxMvDla4cnkKvIyDdD7+JddlPa06510BnxdrT4w7zQeh4Qd4mdwhULJMtgedaN8IpG0TUtl8LJRjDYTKceh7bibvCdBJpurR45oSatCFsVI3Krm1Fzu7kKlZb4YfEh0QRiBrXBD7+qQt4V6VXICt1ZFH2W+YZgNLDw13Lt7K23CCxQvigYUXhWvrXpHdJ8X6B8L3T5u2i+mpHm1VFZxf51Oso0Y7DgY+MIo2SSH5cG8DJ2QQg5G3XtQMxJJoKi1ninxNhazi8/u9ui+GpHtDTB8aHXkGtWshtX4oP/0hp1tGpJ0eqONSG8BfdC6eh9yfnXB/Bbf53HwtOqrqcshuLuaGF0S2x0PcsR3OWzfXowh9gQ3ZDwkUiKHr+m8lnjIULJCp+UBUPRmJtOJCuop+B30uODEHkXxuHWAKW03AClfRZ901dauvCyllmBd0aXvlNCk6DVjqSaCv4WrQAB+snSK6GbxBp8w49ep1eNsTzHCq1UZO07PaBrp9pI1T5FkTtfnrS4AVvHCmORqVEJXahsUq9ApLsj1aVzomIihJ7ZmAPCwEXO44bnnRWQS785QfLfHzUSuBcZr9l1G2EQzvKhTAleLV9kk8H/5uwVTGK1QpyOfYRDNjxLV1yjCWNpIrZeZxrzJd5gHkBrHCyOXJ/1L54PMg9xtIcvg/BfiBRs8iYyzMHP9TTnim96nb4agWygKMHkJGnpJvAsdlCftuG7RgC9Uz+wRFz0gvZ/Q697RevFyjTiQkuA3VUWJQJG7n3p0xIcen3o=",
+      "pubkey": "069ce87139c4f03669cb0ed650adfb987bbedecdf205564edf7764962df50177",
+      "id": "d0eee71e4d744c59d23b8d2f3ddeba370df38688eb15b335eddfe8d52a4c7733",
+      "sig": "2a2fe2d228ca9aee092d57682f4f74bed4da9dec682f8713d33b904b966c8e66896c0520c3102872325a25a5a966b8684fe6a231277c3eea1bdd226a4666e63a"
+    }
+  }
+}

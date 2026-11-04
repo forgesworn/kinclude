@@ -1,9 +1,12 @@
 # Kinclude — design
 
-**Status:** draft, 2026-11-04. Nothing here is built. This document turns the
-promises on [kinclude.app](https://kinclude.app) into a design, names the
-Kindred and KithMoot pieces each promise rests on, and lists what is still
-undecided. Where it says *decision*, the decision is proposed, not taken.
+**Status:** v1 built, 2026-11-05. This document turns the promises on
+[kinclude.app](https://kinclude.app) into a design and names the Kindred and
+KithMoot pieces each promise rests on. The library (`src/`) and a
+phone-first web client (`app/`) implement it; the wire is in
+[`protocol.md`](protocol.md). §11 records how each open question was
+decided for v1, and §13 what v1 leaves out. Where the build corrected this
+draft, the text below has been changed to match.
 
 ## 1. What Kinclude is
 
@@ -172,13 +175,15 @@ in the 1463 body under a key derived from the bearer. Kinclude changes the
 - A bearer is never shown as a URL and never put on the clipboard. It is
   delivered, NIP-44-sealed, to one intended invitee's identity (an adult) or
   to the guardian of an intended invitee (a child).
-- The 1463 body carries an additional field, `approval`, holding the dual
-  approval (§6.2). A Kinclude client refuses to join a room whose invitation
-  lacks a valid approval naming it; a plain KithMoot client ignores the field
-  and would join, which is why the bearer is never exposed (the field is
-  belt, the delivery is braces).
-- The inviter `h` is the inviting adult's identity key, or, when a child
-  initiates, their guardian's. Delegation chains are not used.
+- *As built:* the 1463 body is fold-kit's, unchanged. The approval is
+  enforced where it cannot be skipped: the invitation hands over only epoch
+  0, which in a Kinclude room is a lobby. The current epoch comes from the
+  authority's epoch desk, which grants it only to participants the room's
+  signed state admits, and the state admits nobody without the pairs (§6.2).
+  A bearer is minted per invitee, so a leaked one is traceable and
+  retirable, and still opens only the lobby.
+- The inviter `h` is the room's authority key, held by the creator's phone.
+  Delegation chains are not used.
 
 ### 6.2 Dual approval
 
@@ -271,8 +276,8 @@ of every room the child is in, and shown to every member of those rooms.
 - Key set as tier 1: the guardian device is a member.
 - The guardian's client **publishes before it renders**. When the guardian
   opens a room, their client first publishes a guardian read receipt into
-  the room (a kind-1460 payload field, `guardianRead: { upTo, at }`, signed by
-  the guardian's room device key), waits for the relay's acknowledgement, and
+  the room (the kind-1460 payload `kinclude: { t: "read", child, upTo, at }`,
+  signed by the guardian's room device key), waits for the relay's acknowledgement, and
   only then decrypts the view. The receipt names the latest message the
   guardian can now see. Members see *Mum read this conversation · 19:42*.
 - This is **client-enforced honesty**: the guardian's device holds the keys
@@ -375,8 +380,8 @@ recorded separately.
   family invited through their guardian. **One-to-one**: a two-member room;
   at tiers 1 and 2 the child's guardian device is a third key holder and the
   banner says so.
-- **Chat** is KithMoot's chat envelope unchanged, plus the `guardianRead`
-  field. Reactions, threads, edits and retractions work as in KithMoot;
+- **Chat** is KithMoot's chat envelope 1, plus one `kinclude` field for
+  Kinclude's own payloads (receipts, proposals, statements, state). Reactions, threads, edits and retractions work as in KithMoot;
   a retraction by the child is visible to a guardian at tier 1/2 as a
   retraction, as it is to any member.
 - **Files** are KithMoot's: encrypted to the room, announced in-room,
@@ -417,44 +422,82 @@ recorded separately.
 - Every honesty rule (§7.2, §7.3, §7.5) is an acceptance test in the
   client's own suite, run against the offline relay, before it is a feature.
 
-## 11. Open questions
+## 11. Open questions, as decided for v1
 
-1. **Child key shape** (§5.1): guardian-bunker signing now, per-app
-   dependant issuance later? Depends on Signet's roadmap for Kinterest.
-2. **Emergency escrow strength** (§7.3): is single-party escrow with a
-   client-enforced notice honest enough to ship under the words "can't be
-   switched off", or does v1 need the witness? If the witness, where does a
-   family run it with no operator?
-3. **Guardian link formats**: Kindependence's `kindependence/...` `d` tags, a
-   shared `kindred/...` namespace, or Kinclude's own? Sharing is right; who
-   owns the package is a suite decision.
-4. **Mixed-tier rooms across families**: when family A's tier-1 child joins
-   family B's room, family B must admit A's guardian. Is that a one-time
-   consent by B's guardians, or implied by approving the child?
-5. **Second guardians** who are not in a room (separated parents): does a
-   tier-1 child's room admit both guardians' devices, always? *Proposed:*
-   yes, by definition of tier 1; a guardian who should not be is one whose
-   guardian link should be revoked, which is a My Signet matter.
-6. **Default relays and Blossom** for a family that knows nothing about
-   either.
-7. **A child with no guardian online** for days: approvals queue in the
-   child's client and the room shows them as waiting. Is there anything a
-   child should be able to do alone? *Proposed:* nothing structural.
-8. **What a child sees of a guardian's own rooms**: nothing; a guardian's
-   adult rooms are ordinary KithMoot rooms outside Kinclude.
+1. **Child key shape** (§5.1): guardian-bunker signing (shape a). A child's
+   phone signs with the child's dependant identity through My Signet and
+   never needs NIP-44; the app's test key for a child refuses NIP-44 the
+   same way, so nothing can come to depend on it. Per-app dependant
+   issuance can replace it without a wire change.
+2. **Emergency escrow strength** (§7.3): single-party escrow. The notice is
+   published and acknowledged before the guardian's identity is asked to
+   open the escrow, and My Signet records the decryption independently. The
+   escrow is a list of copies, so a witness share can be added later
+   without a format change. Whether "can't be switched off" is honest
+   enough for this form is still yours to judge before launch.
+3. **Guardian link formats**: Kindependence's `kindependence/...` tags,
+   reused byte for byte. A shared package is a suite decision still open.
+4. **Mixed-tier rooms across families**: implied by approving the child.
+   A child's approval names the child's guardians, so everyone saying yes
+   sees who will be able to read before they agree. A later tier change
+   needs no new consent from the room.
+5. **Second guardians**: yes. Both guardians are named in the child's
+   approvals, and both read at tiers 1–2. A child's phone tells every
+   guardian about every other one after each pairing, so a proposal names
+   them all.
+6. **Default relays**: the app defaults to two public relays and lets the
+   person change them. Blossom is not used yet: v1 has no files.
+7. **A child with no guardian online**: nothing structural; approvals and
+   tier changes wait, and are shown as waiting.
+8. **A guardian's own rooms**: invisible to the child, as proposed.
+
+New questions the build raised:
+
+9. **The authority is one phone.** Admissions, rekeys and tier changes
+   wait for the creator's phone to be online. KithMoot's keepers or signed
+   admins could take this on.
+10. **The lobby outlives membership.** Everyone ever admitted keeps epoch
+    0, so a removed member who keeps the room secret can still see later
+    state and tier changes in the lobby (not messages). Rotating the lobby
+    on removal would close this; it needs a re-invitation of everyone left.
+11. **Invitations come from the creator.** Whoever proposes, the
+    invitation is sealed by the room creator's identity, so an invitee's
+    contacts check is against the creator. A proposal by Nan of her own
+    friend reaches the friend as from Mum.
 
 ## 12. Milestones
 
-1. **Paper**: this document reviewed; open questions 1–3 decided with the
-   Signet and Kindependence owners; wire shapes for approval, tier statement,
-   guardian receipt, escrow and emergency notice written into a Kinclude
-   protocol note and vectors.
-2. **Library**: a `kinclude` policy layer over KithMoot in TypeScript, with
-   the offline relay: dual approval, tier statements, rekeys on tier change,
-   guardian receipts, escrow and opening; every honesty rule a test.
-3. **Android client**: pairing, family room, one-to-one, tiers 1 and 2.
-4. **Tier 3** with single-party escrow; **files and calls**.
-5. **Witness** option; iOS; web.
+1. **Paper**: done. This document, [`protocol.md`](protocol.md) and
+   `vectors/kinclude-vectors.json`.
+2. **Library**: done. `src/` over fold-kit 0.17.0: statements, family
+   graph, tier chain, dual approval, room state and rules, the room engine
+   (lobby, desk, rekeys on every change in who reads, receipts, escrow and
+   emergency opening), invitations, pairing and households. Every honesty
+   rule is a test against an in-memory relay (`test/scenario.test.ts`,
+   `test/household.test.ts`).
+3. **Client**: a phone-first web app (`app/`) rather than Android first. It
+   covers pairing, rooms, approvals, all three tiers, receipts, emergency
+   opening and tier changes, with Playwright tests driving three phones
+   against an offline relay (`test/e2e/`). An Android shell is next.
+4. **Files and calls**: not started.
+5. **Witness** option; iOS: not started.
+
+## 13. What v1 leaves out
+
+- **Calls, photos and files.** KithMoot has both; neither is wired in.
+- **My Signet contacts.** The adult's "people you know" list is kept on
+  the phone by hand; the signet-contacts grant (kin and kith from My
+  Signet) is the intended source and is not connected.
+- **An Android shell**, push notifications (an emergency notice shows in
+  the app, not as a phone notification), a service worker and offline
+  start.
+- **Credential renewal.** Room credentials last a year; renewal is not
+  built.
+- **Re-approving a newly linked guardian.** A guardian linked to a child
+  after the child joined a room is not listed there until the child is
+  approved in again.
+- **One-to-one rooms** are ordinary two-person rooms; there is no
+  dedicated flow for them yet.
 
 ## Sources
 
