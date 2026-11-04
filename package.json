@@ -20,7 +20,7 @@
     "build:lib": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p app/tsconfig.json",
     "test": "vitest run",
-    "vectors": "node --experimental-strip-types vectors/generate.ts",
+    "vectors": "node vectors/generate.mjs",
     "demo": "vite --config app/vite.config.ts",
     "build": "vite build --config app/vite.config.ts",
     "relay": "node test/ws-relay.mjs",
@@ -30,11 +30,19 @@
     "@forgesworn/fold-kit": "0.17.0",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^1.8.0",
-    "nostr-tools": "^2.25.2"
+    "htm": "^3.1.1",
+    "nostr-tools": "^2.25.2",
+    "preact": "^11.1.1",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/ws": "^8.18.2",
     "typescript": "^5.6.0",
-    "vitest": "^4.1.11"
+    "vite": "^7.3.7",
+    "vitest": "^4.1.11",
+    "ws": "^8.22.1"
   }
 }
