@@ -1,7 +1,6 @@
 node_modules/
 dist/
-coverage/
-*.local
-.claude/
-.superpowers/
+app/dist/
+test-results/
+playwright-report/
 .wrangler/

@@ -1,0 +1,40 @@
+{
+  "name": "@forgesworn/kinclude",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Family-only messaging over KithMoot rooms: dual-approval invitations and oversight tiers that grow up with the child.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p app/tsconfig.json",
+    "test": "vitest run",
+    "vectors": "node --experimental-strip-types vectors/generate.ts",
+    "demo": "vite --config app/vite.config.ts",
+    "build": "vite build --config app/vite.config.ts",
+    "relay": "node test/ws-relay.mjs",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@forgesworn/fold-kit": "0.17.0",
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^1.8.0",
+    "nostr-tools": "^2.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.11"
+  }
+}
