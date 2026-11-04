@@ -109,6 +109,13 @@ const TIER_HELP: Record<Tier, string> = {
   3: 'Their messages are theirs. In an emergency you can open them, and they are told straight away.',
 }
 
+/** The same three, as the child reads them. */
+const TIER_HELP_CHILD: Record<Tier, string> = {
+  1: 'Your guardians see every message, and you know they do.',
+  2: 'Your guardians can read your messages, and you see exactly what they have read.',
+  3: 'Your messages are yours. In an emergency a guardian can open them, and you are told straight away.',
+}
+
 // ---------------------------------------------------------------- setup
 
 function Setup() {
@@ -202,7 +209,7 @@ function Home({ open }: { open: (id: string) => void }) {
               ${tiers.map((t) => html`
                 <div class="card stack" data-testid="tier-request">
                   <div><strong>${nameOf(t.signedBy)}</strong> would like ${t.child === hh.me ? 'you' : nameOf(t.child)} to move to <strong>${TIER_NAMES[t.tier]}</strong>.</div>
-                  <div class="muted small">${TIER_HELP[t.tier]}</div>
+                  <div class="muted small">${(t.child === hh.me ? TIER_HELP_CHILD : TIER_HELP)[t.tier]}</div>
                   <div class="row"><button class="primary" onClick=${() => attempt(() => hh.agreeTier(t), 'Agreed')}>Agree</button></div>
                 </div>`)}
             </div>
@@ -264,7 +271,7 @@ function Family() {
           ${mine && html`
             <div class="card stack">
               <div>Your oversight: <span class="tier" data-testid="my-tier">${TIER_NAMES[mine]}</span></div>
-              <div class="muted small">${TIER_HELP[mine]}</div>
+              <div class="muted small">${TIER_HELP_CHILD[mine]}</div>
               <${TierChooser} child=${hh.me} current=${mine} />
             </div>`}
           <div class="card stack">
@@ -547,7 +554,9 @@ function App() {
 async function boot(): Promise<void> {
   const identity = await restoreIdentity().catch(() => undefined)
   if (identity) await startHousehold(identity, undefined, savedKind())
-  render(html`<${App} />`, document.getElementById('app')!)
+  const root = document.getElementById('app')!
+  root.replaceChildren()
+  render(html`<${App} />`, root)
 }
 
 void boot()
