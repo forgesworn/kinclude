@@ -32,6 +32,9 @@ export interface Stream {
 export type KincludePayload =
   /** A member's family statements: guardian links and their tier chain. */
   | { t: 'statements'; events: Event[] }
+  /** A device arriving in the lobby: who it is, with its family statements.
+   *  What the authority admits a newcomer on. */
+  | { t: 'hello'; events: Event[] }
   /** Somebody would like `invitee` in the room. Approvals follow. */
   | { t: 'propose'; invitee: string; role: 'adult' | 'child'; guardians: string[]; name?: string; expires: number }
   /** The authority's signed room state. */
@@ -129,8 +132,8 @@ export function decodeMessage(event: Event, opts: { roomId: string; stream: Stre
   }
 }
 
-function eventList(raw: unknown): Event[] | null {
-  if (!Array.isArray(raw) || raw.length === 0 || raw.length > MAX_EVENTS_PER_PAYLOAD) return null
+function eventList(raw: unknown, allowEmpty = false): Event[] | null {
+  if (!Array.isArray(raw) || (raw.length === 0 && !allowEmpty) || raw.length > MAX_EVENTS_PER_PAYLOAD) return null
   for (const e of raw) if (!isEventShape(e)) return null
   return raw as Event[]
 }
@@ -152,6 +155,10 @@ export function readPayload(raw: unknown): KincludePayload | null {
     case 'statements': {
       const events = eventList(p.events)
       return events ? { t: 'statements', events } : null
+    }
+    case 'hello': {
+      const events = eventList(p.events, true)
+      return events ? { t: 'hello', events } : null
     }
     case 'propose': {
       if (!isPubkey(p.invitee) || (p.role !== 'adult' && p.role !== 'child')) return null
