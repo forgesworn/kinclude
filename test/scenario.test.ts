@@ -301,5 +301,12 @@ describe('oversight tiers', () => {
     await h.dadRoom.send('just me now')
     await quiet(h.relay, h.rooms)
     expect(h.samRoom.view().messages.map((m) => m.text)).not.toContain('just me now')
+    // Sam still holds the keys to the epoch Sam was in. Writing into it
+    // later does not put words into the room's history.
+    clock.t += 3600
+    await h.samRoom.send('written after I left')
+    await quiet(h.relay, h.rooms)
+    expect(h.dadRoom.view().messages.map((m) => m.text)).not.toContain('written after I left')
+    clock.t -= 3600
   })
 })

@@ -27,7 +27,7 @@ import {
 import type { Filter } from 'nostr-tools/filter'
 import { ApprovalBook, FamilyGraph, TierLedger } from './family.js'
 import { roomDeviceKey, wrapInvitation, type InvitationEnvelope } from './invite.js'
-import { decodeMessage, encodeMessage, newMessageId, type KincludePayload, type RoomMessage, type Stream } from './messages.js'
+import { decodeMessage, encodeMessage, newMessageId, MAX_CLOCK_SKEW_SECONDS, type KincludePayload, type RoomMessage, type Stream } from './messages.js'
 import { banners, checkNewcomer, checkTransition, computeReaders, mayObserve, mayRemove, requiredChildren, type ChildBanner } from './policy.js'
 import type { KincludeSigner } from './signer.js'
 import { member, readState, signState, type RoomState, type StateMember } from './state.js'
@@ -187,7 +187,7 @@ export class KincludeRoom {
   private creator: string | undefined
   private readonly messages = new Map<string, { msg: RoomMessage; epoch: number; viaEmergency?: true }>()
   private readonly proposals = new Map<string, { p: Extract<KincludePayload, { t: 'propose' }>; by: string; at: number }>()
-  private readonly receipts: Receipt[] = []
+  private readonly receipts: Array<Receipt & { epoch: number; participant: string; sentAt: number }> = []
   private readonly escrows = new Map<string, { device: string; copies: Array<{ guardian: string; ct: string }> }>()
   private readonly emergencies: Array<SignedEmergency & { device: string }> = []
   private readonly hellos = new Map<string, { device: string; at: number; name?: string }>()
@@ -413,7 +413,7 @@ export class KincludeRoom {
         this.acceptStates()
         break
       case 'read':
-        if (where === 'main') this.receipts.push({ guardian: msg.participant, child: k.child, upTo: k.upTo, at: k.at })
+        if (where === 'main') this.receipts.push({ guardian: msg.participant, child: k.child, upTo: k.upTo, at: k.at, epoch, participant: msg.participant, sentAt: msg.sentAt })
         break
       case 'escrow':
         if (where === 'lobby') this.escrows.set(`${msg.participant}:${k.epoch}`, { device: msg.device, copies: k.copies })
@@ -908,8 +908,25 @@ export class KincludeRoom {
       .map((c) => c.pk)
   }
 
+  /**
+   * Whether something written in `epoch` by `participant` at `sentAt` is the
+   * room's: the room's state listed them as a reader of that epoch, and it
+   * is not dated after the room left the epoch. A member who was removed
+   * still holds the keys to the epochs they were in; this is what keeps
+   * them from writing into the room's history afterwards.
+   */
+  private belongs(epoch: number, participant: string, sentAt: number): boolean {
+    let listed = false
+    let leftAt: number | undefined
+    for (const a of this.accepted) {
+      if (a.state.epoch === epoch && a.state.readers.includes(participant)) listed = true
+      if (a.state.epoch > epoch && leftAt === undefined) leftAt = a.event.created_at
+    }
+    return listed && (leftAt === undefined || sentAt <= leftAt + MAX_CLOCK_SKEW_SECONDS)
+  }
+
   private ordered(): Array<{ msg: RoomMessage; epoch: number; viaEmergency?: true }> {
-    return [...this.messages.values()].sort((a, b) =>
+    return [...this.messages.values()].filter((m) => this.belongs(m.epoch, m.msg.participant, m.msg.sentAt)).sort((a, b) =>
       (a.msg.sentAtMs ?? a.msg.sentAt * 1000) - (b.msg.sentAtMs ?? b.msg.sentAt * 1000) || (a.msg.id < b.msg.id ? -1 : 1))
   }
 
@@ -1020,7 +1037,8 @@ export class KincludeRoom {
       unrevealed: all.length - visible.length,
       gatedFor: gated,
       proposals,
-      receipts: [...this.receipts],
+      receipts: this.receipts.filter((r) => this.belongs(r.epoch, r.participant, r.sentAt))
+        .map(({ guardian, child, upTo, at }) => ({ guardian, child, upTo, at })),
       emergencies: [...this.emergencies],
       openable,
     }
