@@ -5,5 +5,6 @@ you both chose. Part of the [Kindred](https://kindred.software) suite.
 
 ## Status
 
-In design. The product is not built yet. The marketing site for
-kinclude.app lives in `sites/kinclude/` and is live at https://kinclude.app.
+In design. The product is not built yet. The design draft is
+[`docs/design.md`](docs/design.md). The marketing site for kinclude.app
+lives in `sites/kinclude/` and is live at https://kinclude.app.
