@@ -40,7 +40,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: KithMoot's Kotlin protocol and Kinclude's Kotlin core
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The offline relay the Kotlin relay pool is tested against.
+      - run: npm ci
+      - name: KithMoot's Kotlin protocol and Kinclude's Kotlin modules
         working-directory: android
-        run: ./gradlew :kithmoot-protocol:test :core:test --console=plain
+        run: ./gradlew :kithmoot-protocol:test :core:test :net:test --console=plain
 

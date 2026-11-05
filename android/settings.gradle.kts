@@ -38,6 +38,9 @@ project(":kithmoot-protocol").projectDir = file("vendor/kithmoot-android/protoco
 // TypeScript library's vectors.
 include(":core")
 
+// Relays over OkHttp: pure JVM, tested against a real WebSocket relay.
+include(":net")
+
 // The Android app needs the Android SDK. Leave it out where there is none,
 // so the JVM modules still build and test.
 if (withAndroid) include(":app")
