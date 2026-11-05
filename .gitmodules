@@ -1,0 +1,3 @@
+[submodule "android/vendor/kithmoot-android"]
+	path = android/vendor/kithmoot-android
+	url = https://github.com/forgesworn/kithmoot-android
