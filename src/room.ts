@@ -122,6 +122,31 @@ export interface RoomView {
   emergencies: Array<SignedEmergency & { device: string }>
   /** Children in the room this viewer could open in an emergency now. */
   openable: string[]
+  /** The room's call, as its history tells it: who joined and has not left,
+   *  in the last `CALL_RECORD_HOURS`. Whether they are still on it is the
+   *  call's own presence (`RoomCall`). */
+  call: { id: string; on: Array<{ participant: string; video: boolean; at: number }> } | undefined
+  /** Joins and leaves, newest last, for the room's history. */
+  callLog: Array<{ participant: string; call: string; state: 'join' | 'leave'; video: boolean; at: number }>
+}
+
+/** How long a join with no leave still counts as somebody on the call, for
+ *  a phone that was not watching. */
+export const CALL_RECORD_HOURS = 6
+
+/** What a call needs from its room: the current epoch's keys, this
+ *  device's key and credential, and who may read. */
+export interface CallContext {
+  roomId: string
+  me: string
+  device: string
+  deviceSk: Uint8Array
+  credential: DeviceCredential
+  transport: RelayTransport
+  now: () => number
+  /** The current epoch, when this device holds it and may read. */
+  epoch: { epoch: number; key: Uint8Array } | undefined
+  readers: string[]
 }
 
 export interface RoomOptions {
@@ -192,6 +217,7 @@ export class KincludeRoom {
   private readonly emergencies: Array<SignedEmergency & { device: string }> = []
   private readonly hellos = new Map<string, { device: string; at: number; name?: string }>()
   private readonly removals: Array<{ actor: string; target: string }> = []
+  private readonly callRecords: Array<{ participant: string; call: string; state: 'join' | 'leave'; video: boolean; at: number; epoch: number }> = []
   private readonly devices = new Map<string, Map<string, DeviceCredential | undefined>>()
   private readonly requests = new Set<string>()
   private lastRequest = 0
@@ -433,6 +459,9 @@ export class KincludeRoom {
       case 'remove':
         if (where === 'main') this.removals.push({ actor: msg.participant, target: k.target })
         break
+      case 'call':
+        if (where === 'main') this.callRecords.push({ participant: msg.participant, call: k.call, state: k.state, video: k.video, at: msg.sentAt, epoch })
+        break
     }
     if (where === 'main' && msg.retracts) {
       const target = this.messages.get(msg.retracts)
@@ -597,7 +626,37 @@ export class KincludeRoom {
         console.error('kinclude: settle failed', err)
       }
       this.opts.onChange?.()
+      for (const l of this.listeners) l()
     })
+  }
+
+  private readonly listeners = new Set<() => void>()
+
+  /** Be told whenever the room has settled after a change. */
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener)
+    return () => { this.listeners.delete(listener) }
+  }
+
+  /** For `RoomCall`. */
+  callContext(): CallContext {
+    if (!this.credential) throw new Error('the device has no credential yet')
+    const s = this.head()?.state
+    const secret = s ? this.epochs.get(s.epoch) : undefined
+    const reading = !!s && !!secret && this.current >= s.epoch && s.readers.includes(this.me)
+    return {
+      roomId: this.roomId, me: this.me, device: this.device, deviceSk: this.deviceSk, credential: this.credential,
+      transport: this.opts.transport, now: () => this.now(),
+      epoch: reading ? { epoch: s!.epoch, key: deriveEpoch({ epoch: s!.epoch, secret: secret! }).key } : undefined,
+      readers: s?.readers ?? [],
+    }
+  }
+
+  /** Record joining or leaving the room's call, and wait for the relay. */
+  async postCall(call: string, state: 'join' | 'leave', video: boolean): Promise<void> {
+    const who = this.opts.name ?? 'Someone'
+    await this.post({ t: 'call', call, state, video }, 'main',
+      state === 'join' ? `${who} joined the ${video ? 'video' : 'voice'} call.` : `${who} left the call.`)
   }
 
   /** Resolves once everything already received has been acted on. */
@@ -984,6 +1043,22 @@ export class KincludeRoom {
 
   // ------------------------------------------------------------ views
 
+  private callView(): Pick<RoomView, 'call' | 'callLog'> {
+    const log = this.callRecords
+      .filter((r) => this.belongs(r.epoch, r.participant, r.at))
+      .sort((a, b) => a.at - b.at)
+      .map(({ participant, call, state, video, at }) => ({ participant, call, state, video, at }))
+    const since = this.now() - CALL_RECORD_HOURS * 3600
+    const latest = new Map<string, (typeof log)[number]>()
+    for (const r of log) latest.set(r.participant, r)
+    const joined = [...latest.values()].filter((r) => r.state === 'join' && r.at >= since)
+    const newest = joined.sort((a, b) => b.at - a.at)[0]
+    const call = newest
+      ? { id: newest.call, on: joined.filter((r) => r.call === newest.call).map((r) => ({ participant: r.participant, video: r.video, at: r.at })) }
+      : undefined
+    return { call, callLog: log }
+  }
+
   view(): RoomView {
     const head = this.head()
     const s = head?.state
@@ -1041,6 +1116,7 @@ export class KincludeRoom {
         .map(({ guardian, child, upTo, at }) => ({ guardian, child, upTo, at })),
       emergencies: [...this.emergencies],
       openable,
+      ...this.callView(),
     }
   }
 }

@@ -47,6 +47,10 @@ export type KincludePayload =
   | { t: 'emergency'; event: Event }
   /** A member asks the authority to remove somebody, or themself. */
   | { t: 'remove'; target: string }
+  /** Somebody joined or left the room's call. Durable, so the room's history
+   *  says who was on a call; a phone publishes its join, and has it
+   *  acknowledged, before any of its media leaves it. */
+  | { t: 'call'; call: string; state: 'join' | 'leave'; video: boolean }
 
 export interface RoomMessage {
   id: string
@@ -191,6 +195,10 @@ export function readPayload(raw: unknown): KincludePayload | null {
     }
     case 'remove':
       return isPubkey(p.target) ? { t: 'remove', target: p.target } : null
+    case 'call':
+      if (typeof p.call !== 'string' || !/^[0-9a-f]{32}$/.test(p.call)) return null
+      if ((p.state !== 'join' && p.state !== 'leave') || typeof p.video !== 'boolean') return null
+      return { t: 'call', call: p.call, state: p.state, video: p.video }
     default:
       return null
   }
