@@ -86,7 +86,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           working-directory: android
           # On failure, the app's crash and log lines go into the job log.
-          script: ./gradlew :app:connectedDebugAndroidTest --console=plain || (adb logcat -d '*:E' | grep -v -E "WifiService|Wifi|Telephony|GmsCore|chromium" | tail -250; exit 1)
+          script: ./gradlew :app:connectedDebugAndroidTest --console=plain || (adb logcat -d '*:E' System.err:W | grep -v -E "WifiService|Wifi|Telephony|GmsCore|chromium|BackupHelper" | tail -250; exit 1)
       - if: always()
         uses: actions/upload-artifact@v4
         with:

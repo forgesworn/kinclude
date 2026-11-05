@@ -73,6 +73,16 @@ class TwoPeopleTest {
         // Mum makes a room and invites Nan; with no children in it, her word is enough.
         val room = mum.createRoom("Home")
         room.propose(nan, Role.ADULT, "Nan")
+        // First the protocol: the invitation reaches Nan's household. Then the screen.
+        try {
+            compose.waitUntil(40_000) { graph.household.value!!.data.invites.isNotEmpty() }
+        } catch (e: Throwable) {
+            val v = room.view()
+            val nanData = graph.household.value!!.data
+            throw AssertionError("The invitation never reached Nan's household. Mum's room: members=${v.state?.members?.map { it.name }}, " +
+                "proposals=${v.proposals.map { it.name + ":invited=" + it.invited }}. Nan: wraps handled=${nanData.handled.size}, " +
+                "contacts=${nanData.contacts.map { it.name }}, rooms=${nanData.rooms.size}", e)
+        }
         waitFor("Mum invites you to Home")
         compose.screenshot("2-invitation")
         compose.onNodeWithText("Accept").performClick()
