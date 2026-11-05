@@ -25,6 +25,7 @@ tasks.named<JavaCompile>("compileTestJava") {
 dependencies {
     api(project(":kithmoot-protocol"))
     implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.coroutines.core)
     testRuntimeOnly(libs.secp256k1.jni.jvm)
     testImplementation(libs.junit)
 }
