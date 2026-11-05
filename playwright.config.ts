@@ -14,6 +14,9 @@ export default defineConfig({
     baseURL: `http://localhost:${appPort}/`,
     ...devices['Pixel 7'],
     trace: 'retain-on-failure',
+    // Calls: Chromium's fake camera and microphone, with no prompt.
+    permissions: ['camera', 'microphone'],
+    launchOptions: { args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] },
   },
   webServer: [
     { command: `node test/ws-relay.mjs ${relayPort}`, port: relayPort, reuseExistingServer: false },
@@ -21,7 +24,8 @@ export default defineConfig({
       command: `npx vite --config app/vite.config.ts --port ${appPort} --strictPort`,
       port: appPort,
       reuseExistingServer: false,
-      env: { KINCLUDE_RELAYS: `ws://localhost:${relayPort}` },
+      // No STUN server: the phones are all on this machine.
+      env: { KINCLUDE_RELAYS: `ws://localhost:${relayPort}`, KINCLUDE_ICE: 'none' },
     },
   ],
 })

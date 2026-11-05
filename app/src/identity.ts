@@ -115,3 +115,36 @@ export function relays(): string[] {
 export function setRelays(list: string[]): void {
   localStorage.setItem('kinclude.relays', JSON.stringify(list))
 }
+
+/**
+ * Where calls find a route between two phones. A STUN server tells a phone
+ * its public address; a TURN server relays a call when no direct route
+ * exists (common on mobile networks). Each line is a URL, optionally
+ * followed by a username and password for TURN. The STUN server sees each
+ * phone's address when a call starts, and nothing of the call.
+ */
+export interface IceServer { urls: string; username?: string; credential?: string }
+
+const DEFAULT_ICE = (import.meta.env.KINCLUDE_ICE as string | undefined) ?? 'stun:stun.cloudflare.com:3478'
+
+export function parseIce(text: string): IceServer[] {
+  const out: IceServer[] = []
+  for (const line of text.split(/[\n,]/)) {
+    const [urls, username, credential] = line.trim().split(/\s+/)
+    if (!urls || !/^(stun|turns?):/.test(urls)) continue
+    out.push({ urls, ...(username ? { username } : {}), ...(credential ? { credential } : {}) })
+  }
+  return out
+}
+
+export function iceText(): string {
+  return localStorage.getItem('kinclude.ice') ?? DEFAULT_ICE.split(',').join('\n')
+}
+
+export function iceServers(): IceServer[] {
+  return parseIce(iceText())
+}
+
+export function setIceText(text: string): void {
+  localStorage.setItem('kinclude.ice', text)
+}

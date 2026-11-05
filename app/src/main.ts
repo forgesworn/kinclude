@@ -11,9 +11,12 @@ import {
   type KincludeRoom,
   type KincludeSigner,
   type RoomView,
+  RoomCall,
+  type CallEnvironment,
+  type StreamLike,
   type Tier,
 } from '../../src/index.js'
-import { connectMySignet, createLocalIdentity, forgetEverything, localStore, relays, restoreIdentity, savedKind, setRelays, type Kind } from './identity.js'
+import { connectMySignet, createLocalIdentity, forgetEverything, iceServers, iceText, localStore, relays, restoreIdentity, savedKind, setIceText, setRelays, type Kind } from './identity.js'
 
 const html = htm.bind(h)
 
@@ -71,6 +74,45 @@ async function startHousehold(identity: KincludeSigner, name?: string, kind?: Ki
   })
   await household.start()
   changed()
+}
+
+// ---------------------------------------------------------------- calls
+
+const browserCalls: CallEnvironment = {
+  createPeerConnection: (config) => new RTCPeerConnection(config) as unknown as ReturnType<CallEnvironment['createPeerConnection']>,
+  getUserMedia: async (c) => {
+    if (!navigator.mediaDevices?.getUserMedia) throw new Error('This browser cannot reach a microphone or camera here.')
+    return navigator.mediaDevices.getUserMedia(c)
+  },
+}
+
+/** One call per room, kept while the person moves around the app, so going
+ *  back to the room list does not hang up. */
+const calls = new Map<string, RoomCall>()
+
+function callFor(room: KincludeRoom): RoomCall {
+  let call = calls.get(room.roomId)
+  if (!call) {
+    const made: RoomCall = new RoomCall(room, browserCalls, {
+      iceServers: iceServers(),
+      onChange: () => {
+        if (made.ended) { toast(made.ended); made.ended = undefined }
+        changed()
+      },
+    })
+    call = made
+    calls.set(room.roomId, call)
+  }
+  call.watch()
+  return call
+}
+
+function activeCall(): { room: KincludeRoom; call: RoomCall } | undefined {
+  for (const [id, call] of calls) {
+    const room = household?.rooms.get(id)
+    if (room && call.status !== 'idle') return { room, call }
+  }
+  return undefined
 }
 
 // ---------------------------------------------------------------- names
@@ -182,6 +224,11 @@ function Home({ open }: { open: (id: string) => void }) {
     <div class="shell">
       <header class="bar"><img class="mark" src="./favicon.svg" alt="" /><h1>Kinclude</h1><span class="muted small">${hh.data.name}</span></header>
       <main>
+        ${(() => {
+          const on = activeCall()
+          return on && html`<button class="tile card callbar" data-testid="callbar" onClick=${() => open(on.room.roomId)}>
+            <div class="title">On a call in ${on.room.view().name}</div><div class="muted small">Tap to go back to it</div></button>`
+        })()}
         ${waiting > 0 && html`
           <section>
             <h2>Waiting for you</h2>
@@ -223,7 +270,7 @@ function Home({ open }: { open: (id: string) => void }) {
               const v = r.view()
               const last = v.messages.at(-1)
               return html`<button class="tile card" data-testid="room-tile" onClick=${() => open(r.roomId)}>
-                <div class="title">${v.name}</div>
+                <div class="title">${v.name}${v.call && html` <span class="tier" data-testid="call-chip">Call</span>`}</div>
                 <div class="muted small">${last ? `${nameOf(last.from)}: ${last.text}` : v.reading ? 'No messages yet' : v.removed ? 'You cannot read this room now' : 'Waiting to be let in…'}</div>
               </button>`
             })}
@@ -389,12 +436,78 @@ function Me() {
             <button onClick=${() => { setRelays(relayText.split(/\s+/).filter((r) => /^wss?:\/\//.test(r))); location.reload() }}>Save and restart</button>
           </div>
         </details>
+        <details>
+          <summary>Call servers</summary>
+          <${IceSettings} />
+        </details>
         <button class="danger" onClick=${() => { if (confirm('Forget everything on this phone? Rooms and keys kept here are lost.')) { forgetEverything(); location.reload() } }}>Forget this phone</button>
       </div>
     </section>`
 }
 
+function IceSettings() {
+  const [text, setText] = useState(iceText())
+  return html`<div class="stack" style="margin-top:.5rem">
+    <p class="muted small">A STUN server lets two phones on different networks find each other; it sees each phone's address, not the call. A TURN server carries the call when nothing else gets through. One per line; add a username and password after a TURN address.</p>
+    <textarea rows="3" class="mono" value=${text} onInput=${(e: Event) => setText((e.target as HTMLTextAreaElement).value)} />
+    <button onClick=${() => { setIceText(text); location.reload() }}>Save and restart</button>
+  </div>`
+}
+
 // ---------------------------------------------------------------- a room
+
+function VideoTile({ stream, name, mine, video }: { stream: StreamLike | undefined; name: string; mine?: boolean; video: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (el && stream && el.srcObject !== stream) el.srcObject = stream as unknown as MediaStream
+  }, [stream])
+  return html`<figure class=${`tile-video${video ? '' : ' audio-only'}`} data-testid=${mine ? 'local-tile' : 'remote-tile'}>
+    <video ref=${ref} autoplay playsinline muted=${!!mine}></video>
+    ${!video && html`<div class="avatar" aria-hidden="true">${name.slice(0, 1).toUpperCase()}</div>`}
+    <figcaption>${name}</figcaption>
+  </figure>`
+}
+
+function CallPanel({ room, v }: { room: KincludeRoom; v: RoomView }) {
+  const hh = household!
+  const call = callFor(room)
+  const others = call.onCall()
+  const names = list([...new Set(others.map((p) => nameOf(p.participant)))])
+  if (!v.reading) {
+    return v.role === 'guardian'
+      ? html`<p class="muted small" data-testid="call-closed">You cannot join this room's calls at the moment.</p>`
+      : null
+  }
+  const watchedBy = v.role === 'guardian'
+    ? `Everyone here, including ${list(v.banners.filter((b) => b.reading.includes(hh.me)).map((b) => nameOf(b.child)))}, will see that you joined.`
+    : 'Everyone in the room sees who is on a call.'
+  if (call.status === 'idle') {
+    return html`<div class="card stack" data-testid="call-panel">
+      ${others.length > 0
+        ? html`<div><strong>${names}</strong> ${others.length > 1 ? 'are' : 'is'} on a call.</div>`
+        : html`<div class="muted small">No call right now.</div>`}
+      <div class="row">
+        <button class="primary" onClick=${() => attempt(() => call.join({ video: false }))}>${others.length ? 'Join with voice' : 'Voice call'}</button>
+        <button onClick=${() => attempt(() => call.join({ video: true }))}>${others.length ? 'Join with video' : 'Video call'}</button>
+      </div>
+      <div class="muted small">${watchedBy}</div>
+    </div>`
+  }
+  const peers = call.peers()
+  return html`<div class="card stack" data-testid="call-panel">
+    <div class="row"><span class="grow title" data-testid="call-status">${call.status === 'joining' ? 'Joining…' : others.length ? `On a call with ${names}` : 'Waiting for others to join…'}</span></div>
+    <div class="video-grid">
+      <${VideoTile} stream=${call.local} name="You" mine=${true} video=${call.video && !call.cameraOff} />
+      ${peers.map((p) => html`<${VideoTile} key=${p.device} stream=${p.stream} name=${nameOf(p.participant)} video=${p.video} />`)}
+    </div>
+    <div class="row">
+      <button onClick=${() => call.setMuted(!call.muted)} aria-pressed=${call.muted}>${call.muted ? 'Unmute' : 'Mute'}</button>
+      ${call.video && html`<button onClick=${() => call.setCameraOff(!call.cameraOff)} aria-pressed=${call.cameraOff}>${call.cameraOff ? 'Camera on' : 'Camera off'}</button>`}
+      <button class="danger" onClick=${() => attempt(() => call.leave())}>Leave call</button>
+    </div>
+  </div>`
+}
 
 function Banners({ v }: { v: RoomView }) {
   const hh = household!
@@ -466,6 +579,7 @@ function RoomScreen({ room, back }: { room: KincludeRoom; back: () => void }) {
       </header>
       <main>
         <${Banners} v=${v} />
+        <${CallPanel} room=${room} v=${v} />
         ${v.stateProblem && html`<div class="notice">This room's membership changed in a way this phone could not check: ${v.stateProblem}. It is showing the last state it could check.</div>`}
         ${v.gatedFor.length > 0 && v.unrevealed > 0 && !reading && html`
           <div class="card stack" data-testid="gate">
@@ -489,11 +603,16 @@ function RoomScreen({ room, back }: { room: KincludeRoom; back: () => void }) {
         ${v.removed && myRole !== 'guardian' && html`<p class="notice">You are no longer in this room.</p>`}
 
         <div class="messages" data-testid="messages">
-          ${v.messages.map((m) => html`
+          ${[
+            ...v.messages.map((m) => ({ at: m.sentAt, el: html`
             <div class=${`msg${m.from === hh.me ? ' mine' : ''}${m.viaEmergency ? ' emergency' : ''}`} data-testid="message">
               ${m.from !== hh.me && html`<div class="who">${nameOf(m.from)} · ${time(m.sentAt)}</div>`}
               <div>${m.text}</div>
-            </div>`)}
+            </div>` })),
+            // Who joined and left calls is part of the room's history. A
+            // guardian who has not yet read in the open sees it with the rest.
+            ...(v.unrevealed === 0 ? v.callLog : []).map((c) => ({ at: c.at, el: html`<div class="receipt" data-testid="call-log">${c.participant === hh.me ? 'You' : nameOf(c.participant)} ${c.state === 'join' ? `joined the ${c.video ? 'video' : 'voice'} call` : 'left the call'} · ${time(c.at)}</div>` })),
+          ].sort((a, b) => a.at - b.at).map((x) => x.el)}
           ${[...latestReceipts.values()].map((r) => html`<div class="receipt" data-testid="receipt">${r.guardian === hh.me ? 'You' : nameOf(r.guardian)} read this conversation · ${time(r.at)}</div>`)}
           <div ref=${bottom}></div>
         </div>
