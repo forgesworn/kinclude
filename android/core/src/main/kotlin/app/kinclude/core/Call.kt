@@ -220,7 +220,10 @@ class RoomCall(
         val mine = id
         if (status == Status.ON && mine != null) {
             if (p.on && p.call < mine && p.participant in c.readers) { switchTo(p.call); return }
-            if (arriving && p.on && p.call == mine) announce()
+            // Somebody new, on this call or on another one started at the same
+            // moment: say where we are at once, rather than at the next beat,
+            // so the two calls merge into the lower id without waiting.
+            if (arriving && p.on) announce()
         }
         reconcile()
         changed()

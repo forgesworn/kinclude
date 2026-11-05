@@ -167,8 +167,10 @@ export class RoomCall {
         void this.switchTo(p.call)
         return
       }
-      // Somebody new: say we are here at once, rather than at the next beat.
-      if (arriving && p.state === 'on' && p.call === this.id) void this.announce()
+      // Somebody new, on this call or on another one started at the same
+      // moment: say where we are at once, rather than at the next beat, so
+      // the two calls merge into the lower id without waiting.
+      if (arriving && p.state === 'on') void this.announce()
     }
     this.reconcile()
     this.changed()

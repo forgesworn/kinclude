@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.kinclude.AppGraph
+import kotlinx.coroutines.launch
 
 /** Where the app is. A phone app with a handful of screens needs no more. */
 sealed interface Screen {
@@ -97,11 +98,31 @@ private fun Setup(graph: AppGraph) {
         Choice(!child, "Mine: I'm a parent, carer or relative", "You can invite people you know and pair with a child's phone.") { child = false }
         Choice(child, "A child's phone", "Pairs with a parent or carer, in person. Nobody can find it from outside.") { child = true }
         OutlinedTextField(name, { name = it.take(40) }, Modifier.fillMaxWidth(), label = { Text("Name shown to your family") }, singleLine = true)
+        val context = androidx.compose.ui.platform.LocalContext.current
+        val signers = remember { app.kinclude.data.installedSigners(context) }
+        val scope = androidx.compose.runtime.rememberCoroutineScope()
+        var error by remember { mutableStateOf<String?>(null) }
+        if (!child && signers.isNotEmpty()) {
+            for (s in signers) Button(
+                {
+                    error = null
+                    scope.launch { runCatching { graph.setUpWithSigner(name, s.packageName) }.onFailure { error = it.message } }
+                },
+                Modifier.fillMaxWidth().height(52.dp), enabled = name.isNotBlank(),
+            ) { Text("Sign in with ${s.label}") }
+            Text("Your key stays in ${signers.first().label}. Kinclude asks it each time it needs to sign or open something.",
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            Text("Or, just trying it out:", style = MaterialTheme.typography.labelLarge)
+        }
         Text(
-            "Your key is kept on this phone, sealed by Android's keystore. Signing in with My Signet, so the key is never on the phone at all, comes next.",
+            if (child) "This phone keeps the child's key, sealed by Android's keystore. Signing through a guardian's My Signet comes next."
+            else "Keep a key on this phone instead, sealed by Android's keystore. A family should use My Signet, so the key is never on the phone.",
             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Button({ graph.setUp(child, name) }, Modifier.fillMaxWidth().height(52.dp), enabled = name.isNotBlank()) { Text("Start") }
+        androidx.compose.material3.OutlinedButton({ graph.setUp(child, name) }, Modifier.fillMaxWidth().height(52.dp), enabled = name.isNotBlank()) {
+            Text(if (!child && signers.isNotEmpty()) "Keep a key on this phone" else "Start")
+        }
     }
 }
 

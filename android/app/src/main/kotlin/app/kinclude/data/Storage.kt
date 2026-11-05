@@ -78,17 +78,36 @@ class FileHouseholdStore(context: Context) : HouseholdStore {
 class IdentityStore(context: Context) {
     private val sealed = SealedFile(File(context.filesDir, "identity.sealed"))
 
-    data class Saved(val child: Boolean, val name: String, val secretKey: String)
+    /** A key kept here ([secretKey]), or a signer app holding it ([signerPackage] and [pubkey]). */
+    data class Saved(val child: Boolean, val name: String, val secretKey: String? = null, val signerPackage: String? = null, val pubkey: String? = null)
 
-    fun load(): Saved? = sealed.read()?.split('\n')?.takeIf { it.size == 3 }?.let { Saved(it[0] == "child", it[1], it[2]) }
+    fun load(): Saved? {
+        val lines = sealed.read()?.split('\n') ?: return null
+        return when {
+            lines.size == 3 -> Saved(lines[0] == "child", lines[1], secretKey = lines[2])
+            lines.size == 5 && lines[2] == "nip55" -> Saved(lines[0] == "child", lines[1], signerPackage = lines[3], pubkey = lines[4])
+            else -> null
+        }
+    }
+
+    private fun clean(name: String) = name.replace('\n', ' ').trim().ifEmpty { "Me" }
 
     fun create(child: Boolean, name: String): Saved {
-        val saved = Saved(child, name.replace('\n', ' ').trim().ifEmpty { "Me" }, Entropy.bytes(32).toHex())
-        sealed.write(listOf(if (child) "child" else "adult", saved.name, saved.secretKey).joinToString("\n"))
+        val saved = Saved(child, clean(name), secretKey = Entropy.bytes(32).toHex())
+        sealed.write(listOf(if (child) "child" else "adult", saved.name, saved.secretKey!!).joinToString("\n"))
         return saved
     }
 
-    fun signer(saved: Saved): KincludeSigner = LocalSigner(saved.secretKey.hexToBytes(), dependant = saved.child)
+    fun createWithSigner(name: String, packageName: String, pubkey: String): Saved {
+        val saved = Saved(false, clean(name), signerPackage = packageName, pubkey = pubkey)
+        sealed.write(listOf("adult", saved.name, "nip55", packageName, pubkey).joinToString("\n"))
+        return saved
+    }
+
+    fun signer(saved: Saved, context: Context, bridge: () -> SignerBridge?): KincludeSigner = when {
+        saved.secretKey != null -> LocalSigner(saved.secretKey.hexToBytes(), dependant = saved.child)
+        else -> Nip55Signer(saved.pubkey!!, saved.signerPackage!!, context, bridge)
+    }
 
     fun delete() = sealed.delete()
 }

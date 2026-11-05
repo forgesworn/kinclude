@@ -86,9 +86,17 @@ class AppGraph(private val context: Context) {
         }
     }
 
+    /** Set by the activity on screen: how a signer app's screen is opened and answered. */
+    @Volatile var signerBridge: app.kinclude.data.SignerBridge? = null
+
+    /** Which way this phone signs: "key" (kept here) or the signer app's package. */
+    var signedBy: String? = null
+        private set
+
     private suspend fun open(saved: IdentityStore.Saved) {
         val p = RelayPool(relays).also { pool = it }
-        val h = Household.open(p, identities.signer(saved), store, saved.name, saved.child, onChange = { changed() })
+        signedBy = saved.signerPackage ?: "key"
+        val h = Household.open(p, identities.signer(saved, context) { signerBridge }, store, saved.name, saved.child, onChange = { changed() })
         h.start()
         _household.value = h
         KincludeService.start(context)
@@ -100,6 +108,13 @@ class AppGraph(private val context: Context) {
             val saved = identities.create(child, name)
             open(saved)
         }
+    }
+
+    /** Sign in with My Signet (or another NIP-55 signer app): the key stays there. */
+    suspend fun setUpWithSigner(name: String, packageName: String) {
+        val bridge = signerBridge ?: throw app.kinclude.data.SignerException("Kinclude is not on screen.")
+        val signer = app.kinclude.data.Nip55Signer.connect(context, bridge, packageName) { signerBridge }
+        open(identities.createWithSigner(name, packageName, signer.pubkey))
     }
 
     fun forget() {

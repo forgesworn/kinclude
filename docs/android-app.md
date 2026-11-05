@@ -95,7 +95,24 @@ The submodule `android/vendor/kithmoot-android` (pinned):
 
 Kinclude's screens are its own.
 
-## Order of work, once the SDK is reachable
+## Where it stands
+
+- **Done and built in CI:**
+  - the three tabs, chats and conversations, the oversight line, receipts
+    and the read gate, the emergency opening;
+  - pairing by QR and code, people you know, settings;
+  - voice and video calls over WebRTC;
+  - the background service, message, call and emergency notifications,
+    and ringing on the lock screen (a full-screen CallStyle notification);
+  - sign-in with My Signet or another NIP-55 signer app.
+- **Tested on an emulator in CI:** set up, make a room, send a message.
+- **Next:**
+  - a child's phone signing through the guardian's My Signet (NIP-46);
+  - Android telecom (`ConnectionService`) for calls;
+  - QR scanning with the camera;
+  - a two-phone emulator test.
+
+## Order of work, as first planned
 
 1. App shell: sign-in, the three tabs, the relay pool, the household on
    disk.
