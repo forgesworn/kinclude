@@ -37,8 +37,7 @@ class FirstRunTest {
 
     @get:Rule(order = 1) val compose = createAndroidComposeRule<MainActivity>()
 
-    private fun waitFor(text: String, timeoutMs: Long = 20_000) =
-        compose.waitUntil(timeoutMs) { compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes().isNotEmpty() }
+    private fun waitFor(text: String, timeoutMs: Long = 30_000) = compose.waitForText(text, timeoutMs)
 
     @Test fun setUpMakeARoomAndSayHello() {
         waitFor("Whose phone is this?")

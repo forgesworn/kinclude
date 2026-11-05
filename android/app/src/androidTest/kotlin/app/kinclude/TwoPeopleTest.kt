@@ -44,13 +44,13 @@ class TwoPeopleTest {
 
     @get:Rule(order = 1) val compose = createAndroidComposeRule<MainActivity>()
 
-    private fun waitFor(text: String, timeoutMs: Long = 30_000) =
-        compose.waitUntil(timeoutMs) { compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes().isNotEmpty() }
+    private fun waitFor(text: String, timeoutMs: Long = 30_000) = compose.waitForText(text, timeoutMs)
 
     @Test fun mumInvitesNanAndTheyTalk() = runBlocking {
         val graph = (ApplicationProvider.getApplicationContext<Context>() as KincludeApplication).graph
         // Nan sets this phone up.
         waitFor("Whose phone is this?")
+        compose.screenshot("1-setup")
         compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performTextInput("Nan")
         compose.onNodeWithText("Start").performClick()
         waitFor("No chats yet")
@@ -67,12 +67,14 @@ class TwoPeopleTest {
         compose.onNode(hasSetTextAction() and hasText("Name")).performTextInput("Mum")
         compose.onNodeWithText("Add").performScrollTo().performClick()
         compose.waitUntil(10_000) { graph.household.value!!.data.contacts.any { it.pk == mum.me } }
+        compose.screenshot("5-family")
         compose.onNodeWithText("Chats").performClick()
 
         // Mum makes a room and invites Nan; with no children in it, her word is enough.
         val room = mum.createRoom("Home")
         room.propose(nan, Role.ADULT, "Nan")
         waitFor("Mum invites you to Home")
+        compose.screenshot("2-invitation")
         compose.onNodeWithText("Accept").performClick()
         waitFor("Home")
 
@@ -80,6 +82,7 @@ class TwoPeopleTest {
         repeat(60) { if (room.view().state?.member(nan) != null) return@repeat; delay(500) }
         room.send("Did you see the heron this morning?")
         waitFor("Mum: Did you see the heron this morning?")
+        compose.screenshot("3-chats")
         compose.onNodeWithText("Home").performClick()
         waitFor("Did you see the heron this morning?")
         compose.waitUntil(30_000) { compose.onAllNodes(hasSetTextAction() and hasText("Message")).fetchSemanticsNodes().isNotEmpty() }
@@ -87,6 +90,8 @@ class TwoPeopleTest {
         compose.onNodeWithContentDescription("Send").performClick()
 
         // And Mum's phone gets Nan's reply.
+        waitFor("Yes! It was huge.")
+        compose.screenshot("4-conversation")
         var heard = false
         repeat(60) { if (room.view().messages.any { it.text == "Yes! It was huge." }) { heard = true; return@repeat }; delay(500) }
         check(heard) { "Mum never got Nan's reply" }

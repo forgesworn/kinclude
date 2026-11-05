@@ -83,9 +83,12 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           working-directory: android
-          script: ./gradlew :app:connectedDebugAndroidTest --console=plain
-      - if: failure()
+          # On failure, the app's crash and log lines go into the job log.
+          script: ./gradlew :app:connectedDebugAndroidTest --console=plain || (adb logcat -d | grep -E "AndroidRuntime|FATAL|kinclude|Kinclude|TestRunner" | tail -150; exit 1)
+      - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: emulator-test-report
-          path: android/app/build/reports/androidTests/
+          name: emulator-screens-and-report
+          path: |
+            android/app/build/outputs/connected_android_test_additional_output/
+            android/app/build/reports/androidTests/
