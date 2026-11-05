@@ -100,17 +100,25 @@ Kinclude's screens are its own.
 - **Done and built in CI:**
   - the three tabs, chats and conversations, the oversight line, receipts
     and the read gate, the emergency opening;
-  - pairing by QR and code, people you know, settings;
+  - pairing by QR code (shown, and scanned with the camera) and pasted
+    code, people you know, settings;
   - voice and video calls over WebRTC;
   - the background service, message, call and emergency notifications,
     and ringing on the lock screen (a full-screen CallStyle notification);
   - sign-in with My Signet or another NIP-55 signer app.
-- **Tested on an emulator in CI:** set up, make a room, send a message.
+- **Tested on an Android 14 emulator in CI** (`app/src/androidTest`),
+  against the offline relay:
+  - setting up, making a room and sending a message;
+  - two people, one the app driven through its screens and one a
+    household running in the test: an invitation from somebody the app's
+    person knows, accepted, and messages both ways.
+
+  Each step is saved as a screenshot in the `emulator-screens-and-report`
+  artifact.
 - **Next:**
   - a child's phone signing through the guardian's My Signet (NIP-46);
   - Android telecom (`ConnectionService`) for calls;
-  - QR scanning with the camera;
-  - a two-phone emulator test.
+  - an emulator test of a call between two phones.
 
 ## Order of work, as first planned
 
