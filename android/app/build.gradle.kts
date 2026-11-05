@@ -17,11 +17,14 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Each emulator test starts from a phone that has never run Kinclude.
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     testOptions {
         // The emulator test talks to the offline relay over plain ws:// on the host.
         animationsDisabled = true
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     buildTypes {
@@ -63,6 +66,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.webrtc.android)
     implementation(libs.zxing.core)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit)
@@ -71,5 +78,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestUtil("androidx.test:orchestrator:1.5.1")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

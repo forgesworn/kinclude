@@ -8,7 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import app.kinclude.data.SignerBridge
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.CompletableDeferred
 import app.kinclude.notify.Notifier
 import app.kinclude.ui.KincludeApp
@@ -45,9 +48,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         handle(intent)
-        // Messages and calls notify only with this permission (Android 13 and later).
-        if (Build.VERSION.SDK_INT >= 33) askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
         setContent { KincludeTheme { KincludeApp(graph) } }
+        // Messages and calls notify only with this permission (Android 13 and
+        // later). Asked once the phone is set up, not over the first screen.
+        lifecycleScope.launch {
+            graph.household.first { it != null }
+            if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

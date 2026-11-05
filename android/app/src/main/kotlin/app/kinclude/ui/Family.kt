@@ -133,7 +133,10 @@ private fun ChildFamily(graph: AppGraph, h: Household, names: (String) -> String
     }
     Panel {
         Text("Pair with a parent or carer", fontWeight = FontWeight.SemiBold)
-        Text("On their phone, they choose Pair with a child's phone. Paste the code it shows.", style = MaterialTheme.typography.bodySmall)
+        Text("On their phone, they choose Pair with a child's phone. Point this phone's camera at the code, or paste it.", style = MaterialTheme.typography.bodySmall)
+        var scanning by remember { mutableStateOf(false) }
+        if (scanning) QrScanner({ scanned -> scanning = false; code = scanned })
+        else OutlinedButton({ scanning = true }) { Text("Scan the code") }
         OutlinedTextField(code, { code = it }, Modifier.fillMaxWidth(), label = { Text("kinclude-pair:…") }, minLines = 2)
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         Button({

@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +32,10 @@ class FirstRunTest {
             .putString("relays", "ws://10.0.2.2:7788").putString("ice", "stun:127.0.0.1:9").commit()
     }
 
-    @get:Rule val compose = createAndroidComposeRule<MainActivity>()
+    @get:Rule(order = 0) val permissions: GrantPermissionRule = GrantPermissionRule.grant(
+        *(if (android.os.Build.VERSION.SDK_INT >= 33) arrayOf(android.Manifest.permission.POST_NOTIFICATIONS) else emptyArray()))
+
+    @get:Rule(order = 1) val compose = createAndroidComposeRule<MainActivity>()
 
     private fun waitFor(text: String, timeoutMs: Long = 20_000) =
         compose.waitUntil(timeoutMs) { compose.onAllNodesWithText(text, substring = true).fetchSemanticsNodes().isNotEmpty() }
