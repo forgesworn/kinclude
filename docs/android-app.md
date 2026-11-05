@@ -1,11 +1,13 @@
 # The Kinclude Android app
 
-**Status:** planned, 2026-11-05. The Kotlin core it runs on is built and
-tested (`android/core`, 23 tests against the TypeScript library's vectors and
-scenarios). The app module waits on the build machine reaching
-`dl.google.com`, which serves the Android SDK, the Android Gradle plugin and
-AndroidX. Kinclude is app only: the web client in `app/` is a test harness
-for the protocol, not a product.
+**Status:** being built, 2026-11-05. The Kotlin core (`android/core`) and
+the relay pool (`android/net`) are built and tested here, against the
+TypeScript library's vectors and scenarios and a real WebSocket relay. The
+app (`android/app`) is built and its unit tests run on GitHub's runners by
+`.github/workflows/android.yml`, which uploads the debug APK: the machine
+this was written on cannot reach `dl.google.com`, which serves the Android
+SDK and Google's Maven repository. Kinclude is app only: the web client in
+`app/` is a test harness for the protocol, not a product.
 
 ## How it should feel
 

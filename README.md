@@ -42,6 +42,23 @@ envelope) with a family layered on top:
 The wire is in [`docs/protocol.md`](docs/protocol.md), with vectors in
 `vectors/kinclude-vectors.json`.
 
+## The Android app
+
+Kinclude is an Android app, in Kotlin, laid out the way WhatsApp and Signal
+are: chats, calls and family. It lives in `android/`, on KithMoot's Kotlin
+protocol (the `android/vendor/kithmoot-android` submodule), and its plan is
+[`docs/android-app.md`](docs/android-app.md).
+
+```sh
+git submodule update --init
+cd android
+./gradlew :core:test :net:test          # anywhere with a JDK 21
+./gradlew :app:assembleDebug            # needs the Android SDK
+```
+
+GitHub Actions builds the APK on every push that touches `android/` and
+keeps it as the `kinclude-debug-apk` artifact.
+
 ## Build and test
 
 | Command | Purpose |
@@ -53,7 +70,7 @@ The wire is in [`docs/protocol.md`](docs/protocol.md), with vectors in
 | `npm run build:lib` | Library to `dist/` |
 | `npm run build` | The app to `app/dist/` |
 | `npm run relay` | The offline relay on `ws://localhost:7777` |
-| `npm run demo` | The app on http://localhost:5180 |
+| `npm run demo` | The web test harness on http://localhost:5180 |
 | `npm run vectors` | Regenerate the vectors (after `build:lib`) |
 
 To try it by hand with no network, run `npm run relay`, then start the app
