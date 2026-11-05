@@ -42,9 +42,10 @@ class FirstRunTest {
     @Test fun setUpMakeARoomAndSayHello() {
         waitFor("Whose phone is this?")
         compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performTextInput("Mum")
-        compose.onNodeWithText("Keep a key on this phone", substring = true).let {
-            runCatching { it.performClick() }.onFailure { compose.onNodeWithText("Start").performClick() }
-        }
+        // The button, by its exact label: "Start" when no signer app is
+        // installed, as on the emulator.
+        val keep = compose.onAllNodesWithText("Keep a key on this phone").fetchSemanticsNodes().isNotEmpty()
+        compose.onNodeWithText(if (keep) "Keep a key on this phone" else "Start").performClick()
         waitFor("No chats yet")
         compose.onNodeWithContentDescription("New room").performClick()
         compose.onNode(hasSetTextAction() and hasText("Name, e.g. Home")).performTextInput("Home")
