@@ -97,6 +97,11 @@ fun ChatScreen(graph: AppGraph, roomId: String, back: () -> Unit, call: () -> Un
     // each new message is receipted before it is shown, never after.
     LaunchedEffect(reading, v.unrevealed) { if (reading && v.unrevealed > 0) runCatching { room.reveal() } }
     LaunchedEffect(v.messages.lastOrNull()?.id) { v.messages.lastOrNull()?.let { graph.markRead(roomId, it.sentAt) } }
+    // No notifications for the room on screen.
+    androidx.compose.runtime.DisposableEffect(roomId) {
+        graph.notifier.visibleRoom = roomId
+        onDispose { if (graph.notifier.visibleRoom == roomId) graph.notifier.visibleRoom = null }
+    }
 
     val startCall = rememberCall(graph, room, onStarted = call)
 

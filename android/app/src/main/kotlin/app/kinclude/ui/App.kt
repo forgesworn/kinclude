@@ -66,6 +66,13 @@ private fun Navigator(graph: AppGraph) {
     val back: () -> Unit = { if (stack.size > 1) stack = stack.dropLast(1) }
     val home: (Tab) -> Unit = { tab -> stack = listOf(Screen.Home(tab)) }
     BackHandler(enabled = stack.size > 1) { back() }
+    // A tapped notification: straight to the chat, or to its call.
+    val opening by graph.opening.collectAsStateWithLifecycle()
+    androidx.compose.runtime.LaunchedEffect(opening) {
+        val (roomId, call) = opening ?: return@LaunchedEffect
+        stack = listOf(Screen.Home(), Screen.Chat(roomId)) + if (call) listOf(Screen.Call(roomId)) else emptyList()
+        graph.opened()
+    }
     when (val s = stack.last()) {
         is Screen.Home -> HomeScreen(graph, s.tab, onTab = home, open = go)
         is Screen.Chat -> ChatScreen(graph, s.roomId, back = back, call = { go(Screen.Call(s.roomId)) })

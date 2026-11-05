@@ -8,6 +8,10 @@ import app.kinclude.data.FileHouseholdStore
 import app.kinclude.data.IdentityStore
 import app.kinclude.net.RelayPool
 import app.kinclude.call.WebRtcCalls
+import app.kinclude.notify.KincludeService
+import app.kinclude.notify.Notifier
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +33,27 @@ class AppGraph(private val context: Context) {
 
     private val _tick = MutableStateFlow(0L)
     val tick: StateFlow<Long> = _tick.asStateFlow()
-    fun changed() { _tick.value = _tick.value + 1 }
+    val notifier = Notifier(context)
+    private var notifying: Job? = null
+
+    fun changed() {
+        _tick.value = _tick.value + 1
+        // Notifications look at the household a moment after it settles.
+        if (notifying?.isActive == true) return
+        notifying = scope.launch {
+            delay(400)
+            val h = _household.value ?: return@launch
+            runCatching {
+                notifier.check(h, h.rooms.mapValues { it.value.view() }, { id -> roomCalls[id]?.status != null && roomCalls[id]?.status != RoomCall.Status.IDLE }, System.currentTimeMillis() / 1000)
+            }
+        }
+    }
+
+    /** Where a tapped notification asked to go: a room, and whether to its call. */
+    private val _opening = MutableStateFlow<Pair<String, Boolean>?>(null)
+    val opening: StateFlow<Pair<String, Boolean>?> = _opening.asStateFlow()
+    fun openFromNotification(roomId: String?, call: Boolean) { if (roomId != null) _opening.value = roomId to call }
+    fun opened() { _opening.value = null }
 
     private val _household = MutableStateFlow<Household?>(null)
     val household: StateFlow<Household?> = _household.asStateFlow()
@@ -67,6 +91,7 @@ class AppGraph(private val context: Context) {
         val h = Household.open(p, identities.signer(saved), store, saved.name, saved.child, onChange = { changed() })
         h.start()
         _household.value = h
+        KincludeService.start(context)
         changed()
     }
 
@@ -81,6 +106,7 @@ class AppGraph(private val context: Context) {
         roomCalls.values.forEach { c -> scope.launch { c.close() } }
         roomCalls.clear()
         _household.value?.close()
+        KincludeService.stop(context)
         pool?.close()
         identities.delete()
         store.delete()
