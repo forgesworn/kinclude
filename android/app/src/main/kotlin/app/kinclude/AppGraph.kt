@@ -103,10 +103,20 @@ class AppGraph(private val context: Context) {
         changed()
     }
 
+    /** Why setting the phone up failed, if it did: shown on the set-up screen. */
+    private val _setupError = MutableStateFlow<String?>(null)
+    val setupError: StateFlow<String?> = _setupError.asStateFlow()
+
     fun setUp(child: Boolean, name: String) {
+        _setupError.value = null
         scope.launch {
-            val saved = identities.create(child, name)
-            open(saved)
+            try {
+                open(identities.create(child, name))
+            } catch (t: Throwable) {
+                if (t is kotlinx.coroutines.CancellationException) throw t
+                android.util.Log.e("Kinclude", "setting up the phone failed", t)
+                _setupError.value = t.message ?: t.javaClass.simpleName
+            }
         }
     }
 

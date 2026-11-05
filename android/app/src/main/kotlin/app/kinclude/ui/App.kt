@@ -120,6 +120,8 @@ private fun Setup(graph: AppGraph) {
             else "Keep a key on this phone instead, sealed by Android's keystore. A family should use My Signet, so the key is never on the phone.",
             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        val setupError by graph.setupError.collectAsStateWithLifecycle()
+        setupError?.let { Text("That did not work: $it", color = MaterialTheme.colorScheme.error) }
         androidx.compose.material3.OutlinedButton({ graph.setUp(child, name) }, Modifier.fillMaxWidth().height(52.dp), enabled = name.isNotBlank()) {
             Text(if (!child && signers.isNotEmpty()) "Keep a key on this phone" else "Start")
         }
