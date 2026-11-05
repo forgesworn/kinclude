@@ -75,7 +75,7 @@ suspend fun familyOf(child: Person, guardians: List<Person>, tier: Tier): Pair<S
     return digest to events + t
 }
 
-class Household(
+class TestHousehold(
     val relay: MemoryRelay, val dad: Person, val mum: Person, val sam: Person, val genesis: String,
     val dadRoom: KincludeRoom, val samRoom: KincludeRoom, val mumRoom: KincludeRoom,
 ) {
@@ -83,7 +83,7 @@ class Household(
     fun close() = rooms.forEach { it.close() }
 }
 
-suspend fun household(tier: Tier): Household {
+suspend fun household(tier: Tier): TestHousehold {
     val relay = newRelay()
     val dad = adult("Dad"); val mum = adult("Mum"); val sam = kid("Sam")
     val (digest, fam) = familyOf(sam, listOf(dad, mum), tier)
@@ -95,10 +95,10 @@ suspend fun household(tier: Tier): Household {
     quiet(relay, listOf(dadRoom, samRoom))
     val mumRoom = join(relay, mum, invite, fam)
     quiet(relay, listOf(dadRoom, samRoom, mumRoom))
-    return Household(relay, dad, mum, sam, digest, dadRoom, samRoom, mumRoom)
+    return TestHousehold(relay, dad, mum, sam, digest, dadRoom, samRoom, mumRoom)
 }
 
-suspend fun moveTier(h: Household, tier: Tier, seq: Int, prev: String): String {
+suspend fun moveTier(h: TestHousehold, tier: Tier, seq: Int, prev: String): String {
     val (digest, events) = tierEvents(h.sam, h.mum, tier, seq, prev)
     h.samRoom.postStatements(listOf(events[0]))
     h.mumRoom.postStatements(listOf(events[1]))
