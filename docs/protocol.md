@@ -41,6 +41,8 @@ fold-kit's epoch desk accepts only room-scoped credentials.
 | 1481 | Rumor: a guardian forwarding a child's invitation (§6) | Never; inside a seal |
 | 1482 | Rumor: a child's phone telling its guardians the family (§7) | Never; inside a seal |
 | 20480 | Pairing exchange (§7) | Ephemeral |
+| 20462 / 21059 | KithMoot call signal, and its wrap (§8) | 21059 ephemeral, NIP-40 expiry 60 s |
+| 20481 | Call presence (§8) | Ephemeral |
 
 ## 2. Statements
 
@@ -137,6 +139,7 @@ Two streams:
 | `escrow` | `epoch`, `copies[] {guardian, ct}` | lobby | A tier-3 child's device (§5.4) |
 | `emergency` | `event` (an emergency notice) | lobby | A guardian, before opening (§5.4) |
 | `remove` | `target` | main | A member asking the authority |
+| `call` | `call` (32 hex), `state` join\|leave, `video` | main | A device joining or leaving the room's call (§8) |
 
 Links and tier statements ride in the lobby because a guardian who cannot
 read (tier 3) still has to see the child's tier change.
@@ -281,7 +284,60 @@ The exchange runs like this:
    1482) from its inbox key to each guardian, so every guardian knows every
    other one before proposing the child anywhere.
 
-## 8. What this protects, and what it does not
+## 8. Calls
+
+A call is a mesh: one WebRTC peer connection per pair of devices on it.
+The code is `src/call-wire.ts` and `src/call.ts`.
+
+**Signalling** is KithMoot's call signalling profile 1, unchanged:
+
+1. An `offer`, `answer` or `ice` body is the content of a kind 20462 event
+   signed by the room device key. Its tags are `p` (recipient device),
+   `call-id` (room id), `alt` and `kithmoot` = `1`.
+2. The signed event is NIP-44 encrypted, whole, from a throwaway key to the
+   recipient device.
+3. The result goes inside a kind 21059 tagged only `p` and
+   `expiration` = inner time + 60.
+
+Kinclude adds `call` (the call id) to the body. A reader drops anything
+more than 20 seconds from its inner time, or addressed elsewhere.
+
+**Presence** says who is on the call. It is a kind 20481, signed by the
+room device key:
+
+- tag `d` = `HKDF-SHA256(epochKey, ∅, "kinclude/v1/call-presence-tag")`;
+- content NIP-44 under `HKDF-SHA256(epochKey, ∅,
+  "kinclude/v1/call-presence-key")` of
+  `{ call, state: on|off, participant, device, credential, video, at }`.
+
+Each device sends one every 10 seconds while on the call, and at once when
+it sees somebody new. A reader drops one more than 30 seconds old, and one
+whose credential is not this device's for this room. The keys come from
+the current epoch, so only a reader can write or read presence.
+
+**Rules**, each a test in `test/call.test.ts`:
+
+1. **Joining is said first.** A device publishes a `call` join message in
+   the main stream, and waits for the relay to acknowledge it, before it
+   sends presence, signals or media. It records a `leave` when it leaves.
+   The room's history therefore shows who was on every call.
+2. **A phone only connects to people it shows.** A device negotiates only
+   with devices whose fresh presence it holds, for its call, whose person
+   is in the room state's `readers`. The lower device key makes the offer.
+   An offer that arrives before its sender's presence waits for the
+   presence; it is never answered blind.
+3. **The call follows the key set.** When the state stops listing
+   somebody as a reader, every phone closes its connection to them. A phone
+   that can no longer read the room leaves the call.
+4. **One call per room.** A device joins the call it sees in presence, or
+   the newest recorded in the room's history, or starts one with a random
+   id. Two calls started at once merge into the lower id.
+
+So a guardian at tier 3 cannot be on the call: they hold no key. A guardian
+at tiers 1 and 2 can, and shows on it like anybody else. There is no
+listening in.
+
+## 9. What this protects, and what it does not
 
 - **A stranger cannot get in.**
   - There is no discovery. An invitation needs a bearer minted for one
@@ -309,5 +365,10 @@ The exchange runs like this:
   in My Signet's activity log. A modified client could read without a
   receipt at tier 2. At tier 3 it could not read without the escrow, and it
   could not get the escrow without its identity decrypting it.
+- **Calls are peer to peer.** Media goes straight between phones,
+  encrypted by WebRTC (DTLS-SRTP), unless a TURN server relays it; a TURN
+  server carries ciphertext but sees both ends' addresses. The STUN server
+  (the app defaults to Cloudflare's) sees each phone's address when a call
+  starts.
 - **Room members can copy what they read.** Kinclude decides who is in the
   room, not what they do with it.

@@ -7,8 +7,9 @@ you both chose. Part of the [Kindred](https://kindred.software) suite.
 
 Version 1 is built: a TypeScript library and a phone-first web client,
 tested end to end in real browsers against an offline relay. It is not
-released. There is no Android shell yet, no calls or files, and the
-"people you know" list is kept by hand rather than read from My Signet.
+released. Voice and video calls work in every room. There is no Android
+shell yet and no photos or files, and the "people you know" list is kept
+by hand rather than read from My Signet.
 [`docs/design.md`](docs/design.md) §11–13 says what was decided and what
 was left out.
 
@@ -78,6 +79,8 @@ src/            the library
   invite.ts       sealed invitations and per-room keys
   pairing.ts      pairing a child's phone in person
   household.ts    one person on one phone
+  call-wire.ts    call signalling (KithMoot profile 1) and presence
+  call.ts         voice and video calls, a mesh per room
 app/            the web client (Vite, Preact)
 test/           scenario tests, the offline relay, Playwright specs in test/e2e/
 vectors/        wire vectors and their generator

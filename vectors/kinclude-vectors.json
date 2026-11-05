@@ -26,6 +26,8 @@
     "inboxPubkey": "1e56e388556d892b61c71544ad2c83113dafa1ceab43de68864f05be0655331d",
     "pairingKey": "25705daa9a2ebd69d72033abe715c2733f0e7bfdb9401a4c8f0a54ba8270dbbf",
     "pairingTag": "c3c33a447871e9718813ea5025587e1617d9507ef691a138ef83400f09111e9a",
+    "presenceTag": "68b0bf79cac6306c69a5b8c46daa2614bac29361392c725b9e6bb669f8233dc6",
+    "presenceKey": "72801f2337e48b2685f54478516c638367a0dc4cb30f4625417ebd7891b39cda",
     "pairingCode": "kinclude-pair:eyJnIjoiNGYzNTViZGNiN2NjMGFmNzI4ZWYzY2NlYjk2MTVkOTA2ODRiYjViMmNhNWY4NTlhYjBmMGI3MDQwNzU4NzFhYSIsInMiOiI4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4OCIsInQiOjIsIm4iOiJTYW0iLCJtIjoiTXVtIn0"
   },
   "links": {
@@ -45,7 +47,7 @@
       "content": "I am a guardian of this person.",
       "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
       "id": "60b02571743c8943f18746c815c744a9d19df52f4110257e608fd9231e421299",
-      "sig": "cea6fb1d2391772d3d17b4aa56a84215de3b762d64316719b12d2e871e9a39b8a0f4d2151438086a4e33459f1663d8f48682b79d532cee88cfb66c5ce11b92dd"
+      "sig": "8873886526387368334dcdb9b1784e309cf6213d57c68902d884d392ace6b526401e90edd1a079d9d1710bed76d1332e4464f43a7e0758dce03b94f933942e92"
     },
     "dependantOf": {
       "kind": 30078,
@@ -63,7 +65,7 @@
       "content": "This person is my guardian.",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "48ef19fc877c6c9d909ee8216b26befe424b2215810e8c2247c98e7309918c71",
-      "sig": "b37687b90e5fd8c249c59fcdb276119fc271a241fff2513114cea00ed4245e7fb10f38c8fdbcb64e98de8ed0d752cab5d80c6d6d20554777eb03c93b2410981c"
+      "sig": "da6b38b4d74441de084eb9721772697bf99ce482ede199b8a3eeee5d83725603a1dfb7f1d7ae0f62f7decdc4be93f820aa93da2e1cf9a2baad839ecc2373ee51"
     },
     "unlink": {
       "kind": 30078,
@@ -81,7 +83,7 @@
       "content": "This person is no longer linked to me as guardian or dependant.",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "36622d7e62d12164acf6c48640e227bd5833a1022a984c0cf009f56b58670d70",
-      "sig": "4edad1ba9801a66d1b93b419253d0cc4948f5f1e85609c516187f9ff041503b47df8daf5f46e6f01b51b09ef0ff9af7cc58d09dba7c3565d7d8785de927c791e"
+      "sig": "06dcff5bf030f1675a84139d1270d34b8e3db489df24fc728b6adb4dd400d5a6e44bfa76503dd5bf05a280f1e0b84a797350c86aa44a910d0cb6fa149692ad57"
     }
   },
   "approval": {
@@ -125,7 +127,7 @@
       "content": "I agree to Nan joining this Kinclude room.",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "5d13f24ef94796c21a1ff7793b61c221eda20b18e164d908034d2f48a7af2ecd",
-      "sig": "2a56dfcc83f04fad3ef51647e04fd4bc2e1a2291fb6c28ca4ce88e32a2a455f0bb8da508a4a662df7bdb48734122853aa3ccf28c7ee277608fc2315a0821542a"
+      "sig": "16089a85c0f8e7f2668e3bced76642361a68bc2c6be7da987881f7b5051e7eb96b3318aa84c07527302a17a5c54ce9cf13148e2b772a8155a5620865cbb3526b"
     },
     "byGuardian": {
       "kind": 30078,
@@ -159,7 +161,7 @@
       "content": "I agree to Nan joining this Kinclude room.",
       "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
       "id": "e89e31c638ef024790ee026e93cf68dcc0dc99dbd589ec1283f85449e25897ba",
-      "sig": "90e9b5f92efb5f4aa4c3555455eef17b03fc79860788255c413a07d177ae77c1e01af47927d3a7566e5072dc819f308e2ba1d059bfab8704dba0dcd82a65be22"
+      "sig": "d1c8928d95c2519b8d042253b4f46ecb815f794cf3d86bd1eb3d886666ff968571d918330b454df90881507549936ddd922570a3d6b801d4abf9e1e3d8fed751"
     }
   },
   "tier": {
@@ -200,7 +202,7 @@
       "content": "Sam's oversight is now: Growing up. We agreed this together.",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "e53dd9fa1d4654a01b138165b8cda1ff3e78952d5fa72ae1bc8a3ad797f6928c",
-      "sig": "171d519145adeae96d7bfb47edf8c3409d12c6f764bd47083968e1cce78c8491e2abb92e303cf3bc66a3410bd4cca8c13c80aad1cf1cb3eca57a22debc32ab37"
+      "sig": "5701db1cc8844901043605d40ab6584bea6b31706950badc5ad807b885b01a4326852830ab136a2be243df78cb78632fae89dbf97d07bcb5869c615efa291def"
     },
     "genesisByGuardian": {
       "kind": 30078,
@@ -230,7 +232,7 @@
       "content": "Sam's oversight is now: Growing up. We agreed this together.",
       "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
       "id": "26cbc855d17ebf27a535089a8a89b05c9ae5f90c745cd7422f88b454214ae0f6",
-      "sig": "a7d3a8cacb365a426458a554c1753120eff546375e1f731547884c77d79839e05e6213e6c8b3981ced3a5e1a964d07b108edc7ee96d64a70b363e3363f5e3536"
+      "sig": "63646e33c374dc79fa78618bbec46a2667245d3d1f131920f09702ecfe58b2defc16c7fd9b55832ae905383204b45d89a8a9459cf608e8f0843309cb6a2cc89e"
     },
     "up": {
       "statement": {
@@ -269,7 +271,7 @@
       "content": "Sam's oversight is now: Nearly grown. We agreed this together.",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "24d397c6fba79a13d2f7defd0aa1ed98ec3d629d9d432c5b67f58cb9703f323c",
-      "sig": "2ca30e173427adb637fcb2607a257af7be64e06bc443ce8132917fd10ea1187b207b369552c067b3efd32055f96f91f4838179a32554c2dc38fa5655fd3f7a57"
+      "sig": "924859fe718b2dd883198c5afda0ed30120517ce64c9565bac7c8749dd54676e44809d3c66e9c9e51cf70f6da21c7f4b9e9a262027750500d74316f6453a28c1"
     },
     "upByGuardian": {
       "kind": 30078,
@@ -299,7 +301,7 @@
       "content": "Sam's oversight is now: Nearly grown. We agreed this together.",
       "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
       "id": "0a0a47e36a3fde5d704e3c3bee3f567f3b01d2faad03f5aa8daa95af8d143770",
-      "sig": "72e321fab84d93049858bb8a5ccb3711aad8a78267a4296502a43d500380c310c851cd1f04bce3a02c8b60ce28b359d3f578f8ad96b6f2d65e60040422a5388b"
+      "sig": "7bccd2ad8a5abf4abc2aac62d8fd5467324a4f6713ca5db1afa31baef007c99e7d4352288f457b03fd5ba2cb1c80f5a7d0636f903a69422777920fcff1b1e4ec"
     }
   },
   "emergency": {
@@ -333,7 +335,7 @@
       "content": "Your phone has been off since 9",
       "pubkey": "4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa",
       "id": "254c0452fab86ef4e23c6bc7925b7dcaca66840af9f156cb88d056b8dcc36d8f",
-      "sig": "5a4a7ae7642bb971a7c656016ba67f117e1c9c9e8910727552ff7dd8513ce85ba1ee669c52a7a3d7d14ebddf61d2c80d98c902a925360330afceb93a57d059c3"
+      "sig": "e95c7fb588fbfa9bd9041b5060ce464134090cdbad096b84fa4f09eac8b14c117283fcb5ac198e5ebd2d50b1f8634f27fedd14241c59386a057e6f219435f21d"
     }
   },
   "state": {
@@ -353,7 +355,7 @@
       "content": "{\"v\":1,\"room\":\"ba493e96488dfdd3f65099553b3887e9e93001fe573e3d718e4bb98d77f7b7bb\",\"seq\":0,\"prev\":null,\"name\":\"Home\",\"epoch\":1,\"members\":[{\"pk\":\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\",\"role\":\"adult\",\"by\":\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\",\"at\":1800000000,\"approvals\":[],\"links\":[],\"name\":\"Mum\"}],\"readers\":[\"4f355bdcb7cc0af728ef3cceb9615d90684bb5b2ca5f859ab0f0b704075871aa\"],\"removed\":[]}",
       "pubkey": "2c0b7cf95324a07d05398b240174dc0c2be444d96b159aa6c7f7b1e668680991",
       "id": "9f343e4e5b7bfcf8070d02fa7c6ad5b5eb35e02728d1e16fe69938e4815885c0",
-      "sig": "5dea8659e49535bc3e1a20eec49f8e06d6d9527357af8bab166d113d2e9f93a3459173f243555214c8c05b31a3bfba617569e81e516d12f024e4034461f6e266"
+      "sig": "595cb690199efc164e78e0bc88146f7e5111532426583fa1b1b5b095aa85f3393e76479d0266fb1276c78b2935fbc2c8a605f1dce1507c0389b73b5e9b98627d"
     }
   },
   "message": {
@@ -381,7 +383,7 @@
       "content": "",
       "pubkey": "466d7fcae563e5cb09a0d1870bb580344804617879a14949cf22285f1bae3f27",
       "id": "503a008fe624a44c3b63c2838ff26786e6356ecc1d03207b0b88c45b1fdc3e8d",
-      "sig": "405542673c2be42f08241f96d45c9303e22e3d6e980d46f1cdd1f0f484f2ea430ce4916ec0dd136d526fb195e72553a8884333c620fd604f35b596cd1d204e74"
+      "sig": "2be4722c860e4f4b402daa09a51a15b0c733672fbb17e9314e108150be9500a73368c9cc663578a02209bee86ef23fd243216020fa89ea7d14b53a00938d86a9"
     },
     "event": {
       "kind": 1460,
@@ -392,10 +394,10 @@
           "c11eab15a58f795eeceb1bb3a6a5f8b6a2d7a8afc07b77e3dfbbae86a24926d1"
         ]
       ],
-      "content": "AjIkbF6REiUb3CTIs1RcKlT9hQpdjDdEtFsHDJlmaQst5+IrnRKdmNvNEafvpZzss8oIPIV0S3hqU/jw2D7jsu/91ejx57HQNcvE8iDUSb8Hq5C1he1ZbKq8JRWnLkrsGO3quciIJXySeGuA88bJhGv6Y5u5pbOBDFoHqTI7Hn04IZioBTk8UBuZAJTvMNwaoA1qhcVw/FjGpyCDHZ+JIDHQM2ByIsGoRy544WCj/gzAtkUdVPiU4X5yvV+kEJ3dAt17es486WAyK2pIXTVxWSeJev33rzGPsrxChqZkK5KGej8aJ3R2BVAU1aV/6GnRfdOby3Mwi+ke6Yljtc07dCs/Mk0OqniiCosPg3bKT3TE8K0YonUCujmEkPHgbI2sP8T7bamSK+wyiluSKz1AkhIbaylUuZqFHxHymz2Z+QYoHSre2adF+2PHfIivxtiBcAZ+V3RAEyve7ptEbmq/SbOoK7ajy7PrdpzEs/fo5+PnIaCMVoOkX830Qw738RCouFIhrcySkAAUG9KZVYZ+4vVACVBmrn7qfpcsxcION2KNbCQ9XSKxnGfj073gbcvvU8E87/MHRYxft+gbPUlq2w2tlMl5+5A+vr2Kkx3uJx4gHPqeRGIWUBA5o5gzdrShIilBKYQ3OBShHpcYr5cPbkSP0Do9GfQZdZYTxBxMvDla4cnkKvIyDdD7+JddlPa06510BnxdrT4w7zQeh4Qd4mdwhULJMtgedaN8IpG0TUtl8LJRjDYTKceh7bibvCdBJpurR45oSatCFsVI3Krm1Fzu7kKlZb4YfEh0QRiBrXBD7+qQt4V6VXICt1ZFH2W+YZgNLDw13Lt7K23CCxQvigYUXhWvrXpHdJ8X6B8L3T5u2i+mpHm1VFZxf51Oso0Y7DgY+MIo2SSH5cG8DJ2QQg5G3XtQMxJJoKi1ninxNhazi8/u9ui+GpHtDTB8aHXkGtWshtX4oP/0hp1tGpJ0eqONSG8BfdC6eh9yfnXB/Bbf53HwtOqrqcshuLuaGF0S2x0PcsR3OWzfXowh9gQ3ZDwkUiKHr+m8lnjIULJCp+UBUPRmJtOJCuop+B30uODEHkXxuHWAKW03AClfRZ901dauvCyllmBd0aXvlNCk6DVjqSaCv4WrQAB+snSK6GbxBp8w49ep1eNsTzHCq1UZO07PaBrp9pI1T5FkTtfnrS4AVvHCmORqVEJXahsUq9ApLsj1aVzomIihJ7ZmAPCwEXO44bnnRWQS785QfLfHzUSuBcZr9l1G2EQzvKhTAleLV9kk8H/5uwVTGK1QpyOfYRDNjxLV1yjCWNpIrZeZxrzJd5gHkBrHCyOXJ/1L54PMg9xtIcvg/BfiBRs8iYyzMHP9TTnim96nb4agWygKMHkJGnpJvAsdlCftuG7RgC9Uz+wRFz0gvZ/Q697RevFyjTiQkuA3VUWJQJG7n3p0xIcen3o=",
+      "content": "AqV5WTDwWnRIavL9q4nCT4wMLNk/gWzo1iLGuHjSXspdKC1R+y/k0G8lg0GM1sA6kz3mDeLKQsA4j09h6IXBLea7q60MbWco8IUdW+P6Ig3yzRgtIPB3N1EvhDQBsEd16XmyjID3qyjmksBnEZOAjvhezhiHqAGpP92kpwspU041qD417poXuCkJcWUr0QnT5hNHSjBOLRxagqfdYSw0ujLICZeU5puNbN9VQ6J76t5PQssz7rPR6/00QJltCVEOWk8XMJOtHo43acFCSRDlaF2egXsPf8gyXMYihf1pj0AC/4wLWNldqL6TtKGkTL91VeLQeW6eTkdciLu7e/+HctoUijTyCjFNmwgQmSrS1lfXIYM+l2Bhjetbxs862lTLx+GgqB2gWQr4bv92XEUNPTp43GAC78xtgvkaYxwSw98yQz1hafTKJVDoecEhWcAgzDi/zi5uQ97n06xKB43o2zp7F0k+mrjhXW8AmdIHzUqgrNAL46m2TuvM25L5yUomnyihPQYqvxkmkLn5y9Qo5JXxuEWVE2+WKxY9bwvPYskAAj3WJi8k9xZPXNI4TWxgdxLqOKBzQ74BpZR2S9hErBhS/PUrB5KoKD5E+zGbv6AFFDwELDwL9GmhC4q1xbX6hilqYhCmTVQXAT9pY5xkFXqgdkZKugwuDe1ZYsomaGfMdIiSzfXqBjB0ezNEGzs4AjMMC4E+F9vvU2lelM31OfyPDhDFaYg2jIbDomiPxV667qackTam2N5fNXt3kNerW0p7JdxNdMUVChN+oASxWB47O+kHXVcdqWOAcgW7h5+Z6cUWfSaHT42f/wTQNFkNoPzy4MB8bJjqr8mQCpBpSd9U8XaYLbJdgnBhLXb4/8FM/Bhf1OIaYSYQdSQ0ddZzrKt+MSROHNluGl8DcIbJLkEYLeTHHLMnrZRkwGKAztyX01BpAKP+y5jMf5V+yJhCDQMQsHX7mj1byBG12eKZ9xHfQcs3U2c8Nn+N8OtywfcbR6dz/c8FHGOm1c1L9N9G/L+c7Zl/674VepI7D5QvEGmPOcbHAbPmVktdNPvGq8fYHf0/BNuOA1wTTJzlDDV+8afh82k4V9sn2nYLxf669TcUsSNff0rcV7Gs9apauPGz2D5kn2X+jyc+P9qZUmpwkLLYKlAMS3z/GOQe9eJBhsYAKOmaq8iwYUNmHKRwuM8u8+GQCffu5e2BDXuIBSykc+h6Qd3xiDAiyCspsG2qbxmQk4R1rgrKS5LX3+hFSeMz4JaP3hPQq80gQZ2BE6cXih50ICfgqPFeJ0aXc6G8BZEJuYB7ZTkB+vGRZ5kF4/Bx3TRu+j+yDmGV4rOl5/4Lw5y4I86oLGX/13HLgp5XghcPyNjej0kAS87+8pZ6SYELyaBpR1Vh4kDvFBQR39ebv9Rko9x84MWA8mGmtjs8fvo2wQubQAUu7vV/o30BmVSFsiQ=",
       "pubkey": "069ce87139c4f03669cb0ed650adfb987bbedecdf205564edf7764962df50177",
-      "id": "d0eee71e4d744c59d23b8d2f3ddeba370df38688eb15b335eddfe8d52a4c7733",
-      "sig": "2a2fe2d228ca9aee092d57682f4f74bed4da9dec682f8713d33b904b966c8e66896c0520c3102872325a25a5a966b8684fe6a231277c3eea1bdd226a4666e63a"
+      "id": "3259005d70b8a29db5875123ba554f934cf03d1f69b76461b854977c7be837f1",
+      "sig": "aeaf52f55418a8111a4ad3ff87eea4652bcaab94454273da63bd05d80dfebe9836d9054597f7b7baa1f17921af34a53e3295d18c41b92dc5a5672acd9ecfd40e"
     }
   }
 }

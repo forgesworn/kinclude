@@ -479,12 +479,21 @@ New questions the build raised:
    covers pairing, rooms, approvals, all three tiers, receipts, emergency
    opening and tier changes, with Playwright tests driving three phones
    against an offline relay (`test/e2e/`). An Android shell is next.
-4. **Files and calls**: not started.
+4. **Calls**: done (2026-11-05). Voice and video in every room, as a mesh
+   on KithMoot's call signalling (protocol §8). **Files**: not started.
 5. **Witness** option; iOS: not started.
 
 ## 13. What v1 leaves out
 
-- **Calls, photos and files.** KithMoot has both; neither is wired in.
+- **Photos and files.** KithMoot has them; they are not wired in.
+- **Ringing a phone that is asleep.** Calls ring only in an open app. KithMoot's
+  call bell (kind 1464) and push notifications would do it.
+- **Large calls.** A call is a mesh, one connection per pair: fine for a
+  family's handful, heavy past six or so. KithMoot's forwarder is the route
+  beyond that.
+- **A TURN server.** The app defaults to a public STUN server only. Two phones
+  that cannot reach each other directly (some mobile networks) need a TURN
+  server, which somebody has to run.
 - **My Signet contacts.** The adult's "people you know" list is kept on
   the phone by hand; the signet-contacts grant (kin and kith from My
   Signet) is the intended source and is not connected.

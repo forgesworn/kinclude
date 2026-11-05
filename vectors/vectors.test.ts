@@ -21,6 +21,7 @@ import { decodeMessage } from '../src/messages.js'
 import { inboxKey, roomDeviceKey } from '../src/invite.js'
 import { decodePairingCode, PAIRING_KEY_INFO, PAIRING_TAG_INFO } from '../src/pairing.js'
 import { LOBBY_CHANNEL } from '../src/room.js'
+import { presenceKeys } from '../src/call-wire.js'
 
 const v = JSON.parse(readFileSync(new URL('./kinclude-vectors.json', import.meta.url), 'utf8'))
 const T = 1_800_000_000
@@ -35,6 +36,9 @@ describe('kinclude vectors', () => {
     expect(getPublicKey(inboxKey(hexToBytes(v.keys.phoneSecret)))).toBe(v.derived.inboxPubkey)
     expect(bytesToHex(hkdf(sha256, hexToBytes(v.keys.pairingSecret), undefined, PAIRING_KEY_INFO, 32))).toBe(v.derived.pairingKey)
     expect(bytesToHex(hkdf(sha256, hexToBytes(v.keys.pairingSecret), undefined, PAIRING_TAG_INFO, 32))).toBe(v.derived.pairingTag)
+    const presence = presenceKeys(deriveEpoch({ epoch: 1, secret: hexToBytes(v.keys.epoch1Secret) }).key)
+    expect(presence.tag).toBe(v.derived.presenceTag)
+    expect(bytesToHex(presence.key)).toBe(v.derived.presenceKey)
     expect(decodePairingCode(v.derived.pairingCode)).toEqual({ guardian: v.pubkeys.guardian, secret: v.keys.pairingSecret, tier: 2, childName: 'Sam', guardianName: 'Mum' })
   })
 

@@ -10,7 +10,7 @@ import { getPublicKey } from 'nostr-tools/pure'
 import {
   localSigner, dependantSigner, guardianOfUnsigned, dependantOfUnsigned, unlinkUnsigned, approvalUnsigned,
   tierUnsigned, tierDigest, emergencyUnsigned, signState, encodeMessage, roomDeviceKey, inboxKey,
-  encodePairingCode, LOBBY_CHANNEL, TIER_GENESIS,
+  encodePairingCode, LOBBY_CHANNEL, TIER_GENESIS, presenceKeys,
 } from '../dist/src/index.js'
 import { hkdf } from '@noble/hashes/hkdf'
 import { sha256 } from '@noble/hashes/sha2'
@@ -51,6 +51,8 @@ const vectors = {
     inboxPubkey: getPublicKey(inboxKey(hexToBytes(keys.phoneSecret))),
     pairingKey: bytesToHex(hkdf(sha256, hexToBytes(keys.pairingSecret), undefined, 'kinclude/v1/pairing-key', 32)),
     pairingTag: bytesToHex(hkdf(sha256, hexToBytes(keys.pairingSecret), undefined, 'kinclude/v1/pairing-tag', 32)),
+    presenceTag: presenceKeys(epoch1.key).tag,
+    presenceKey: bytesToHex(presenceKeys(epoch1.key).key),
     pairingCode: encodePairingCode({ guardian: guardian.pubkey, secret: keys.pairingSecret, tier: 2, childName: 'Sam', guardianName: 'Mum' }),
   },
   links: {
