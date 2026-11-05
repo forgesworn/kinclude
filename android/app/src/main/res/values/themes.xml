@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Kinclude" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#F9F8F4</item>
+        <item name="android:windowBackground">@color/paper</item>
+    </style>
+    <color name="paper">#F9F8F4</color>
+    <color name="ink">#241B12</color>
+    <color name="gold">#E0A458</color>
+</resources>

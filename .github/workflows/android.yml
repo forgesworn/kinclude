@@ -1,0 +1,51 @@
+name: Android
+
+on:
+  push:
+    paths:
+      - "android/**"
+      - "vectors/**"
+      - ".github/workflows/android.yml"
+  pull_request:
+    paths:
+      - "android/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+        with:
+          packages: "platforms;android-35 build-tools;35.0.0"
+          log-accepted-android-sdk-licenses: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # The offline relay the Kotlin relay pool is tested against.
+      - run: npm ci
+      - name: Build the app and run every Kotlin test
+        working-directory: android
+        run: ./gradlew :app:assembleDebug :app:testDebugUnitTest :core:test :net:test --console=plain --stacktrace
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kinclude-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
