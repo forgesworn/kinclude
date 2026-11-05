@@ -51,8 +51,8 @@ class TwoPeopleTest {
         // Nan sets this phone up.
         waitFor("Whose phone is this?")
         compose.screenshot("1-setup")
-        compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performTextInput("Nan")
-        compose.onNodeWithText("Start").performClick()
+        compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performScrollTo().performTextInput("Nan")
+        compose.onNodeWithText("Start").performScrollTo().performClick()
         waitFor("No chats yet")
         val nan = graph.household.value!!.me
 
@@ -64,7 +64,7 @@ class TwoPeopleTest {
         // Nan adds Mum as somebody she knows, in the Family tab.
         compose.onNodeWithText("Family").performClick()
         compose.onNode(hasSetTextAction() and hasText("Their key (npub1…)")).performScrollTo().performTextInput(Npub.encode(mum.me))
-        compose.onNode(hasSetTextAction() and hasText("Name")).performTextInput("Mum")
+        compose.onNode(hasSetTextAction() and hasText("Name")).performScrollTo().performTextInput("Mum")
         compose.onNodeWithText("Add").performScrollTo().performClick()
         compose.waitUntil(10_000) { graph.household.value!!.data.contacts.any { it.pk == mum.me } }
         compose.screenshot("5-family")

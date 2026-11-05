@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -41,11 +42,11 @@ class FirstRunTest {
 
     @Test fun setUpMakeARoomAndSayHello() {
         waitFor("Whose phone is this?")
-        compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performTextInput("Mum")
+        compose.onNode(hasSetTextAction() and hasText("Name shown to your family")).performScrollTo().performTextInput("Mum")
         // The button, by its exact label: "Start" when no signer app is
         // installed, as on the emulator.
         val keep = compose.onAllNodesWithText("Keep a key on this phone").fetchSemanticsNodes().isNotEmpty()
-        compose.onNodeWithText(if (keep) "Keep a key on this phone" else "Start").performClick()
+        compose.onNodeWithText(if (keep) "Keep a key on this phone" else "Start").performScrollTo().performClick()
         waitFor("No chats yet")
         compose.onNodeWithContentDescription("New room").performClick()
         compose.onNode(hasSetTextAction() and hasText("Name, e.g. Home")).performTextInput("Home")
